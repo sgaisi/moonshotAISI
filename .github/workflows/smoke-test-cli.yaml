@@ -52,7 +52,7 @@ jobs:
       if: github.event_name == 'workflow_dispatch'
       uses: actions/checkout@v4
       with:
-          repository: sgaisi/moonshot
+          repository: sgaisi/moonshotAISI
           ref: ${{ inputs.moonshot_branch }}
     
     - name: Setup Python 3.11
