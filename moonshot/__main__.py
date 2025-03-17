@@ -136,7 +136,7 @@ def moonshot_data_installation(unattended: bool, overwrite: bool) -> None:
         overwrite (bool): If True, the existing directory will be removed before installation.
     """
     logger.info("Installing Moonshot Data from GitHub")
-    repo = "https://github.com/aiverify-foundation/moonshot-data.git"
+    repo = "https://github.com/sgaisi/moonshot-data-aisi.git"
     folder_name = repo.split("/")[-1].replace(".git", "")
     do_install = True
 
