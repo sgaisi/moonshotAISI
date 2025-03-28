@@ -140,18 +140,37 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
 
-    # Send slack notification
-    - name: Send slack notification
-      if: ${{ ! cancelled() }}
-      uses: slackapi/slack-github-action@v1.26.0
-      with:
-        payload: |
-          {
-            "workflow": "${{ github.repository }} - ${{ github.workflow }} - ${{ env.PR_NUM }}",
-            "status": "SAST: ${{ steps.codeql_summary.outcome }}",
-            "details": "${{ env.CODEQL_SUMMARY }}",
-            "ref": "${{ github.server_url }}/${{ github.repository }}/security/code-scanning"
-          }
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        
+    # - name: Add comment to PR
+    #   if: ${{ ! cancelled() }}
+    #   run: |
+    #     COMMENT: |
+    #       CodeQL Analysis Complete: 
+    #       Status: SAST: ${{ steps.codeql_summary.outcome }}
+    #       Details: ${{ env.CODEQL_SUMMARY }}
+    #       Reference: ${{ github.server_url }}/${{ github.repository }}/security/code-scanning
+
+    #     RESPONSE=$(curl -X POST \
+    #       -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+    #       -H "Accept: application/vnd.github.v3+json" \
+    #       -d '{"body": "'"$COMMENT"'"}' \
+    #       "https://api.github.com/repos/${{ github.repository }}/issues/${{ env.PR_NUMBER }}/comments")
+
+    #     if [[ $? -ne 0 ]]; then
+    #       echo "Error posting comment: $RESPONSE"
+    #       exit 1
+    #     fi
+
+    # # Send slack notification
+    # - name: Send slack notification
+    #   if: ${{ ! cancelled() }}
+    #   uses: slackapi/slack-github-action@v1.26.0
+    #   with:
+    #     payload: |
+    #       {
+    #         "workflow": "${{ github.repository }} - ${{ github.workflow }} - ${{ env.PR_NUM }}",
+    #         "status": "SAST: ${{ steps.codeql_summary.outcome }}",
+    #         "details": "${{ env.CODEQL_SUMMARY }}",
+    #         "ref": "${{ github.server_url }}/${{ github.repository }}/security/code-scanning"
+    #       }
+    #   env:
+    #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
