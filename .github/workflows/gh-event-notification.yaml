@@ -1,15 +1,15 @@
 # name: GH Event Notification
-
+# 
 # on:
 #   issues:
 #     types: [opened]
 #   pull_request:
 #     types: [opened]
-
+# 
 # jobs:
 #   notify:
 #     runs-on: ubuntu-latest
-
+# 
 #     steps:
 #       - name: Get Issue details
 #         if: ${{ github.event_name == 'issues' }}
@@ -22,7 +22,7 @@
 #           echo "user=${{ github.event.issue.user.login }}" >> $GITHUB_ENV
 #           echo "url=${{ github.event.issue.html_url }}" >> $GITHUB_ENV
 #           echo "repo=${{ github.repository }}" >> $GITHUB_ENV
-
+# 
 #       - name: Get PR details
 #         if: ${{ github.event_name == 'pull_request' }}
 #         id: pr_details
@@ -34,7 +34,7 @@
 #           echo "user=${{ github.event.pull_request.user.login }}" >> $GITHUB_ENV
 #           echo "url=${{ github.event.pull_request.html_url }}" >> $GITHUB_ENV
 #           echo "repo=${{ github.repository }}" >> $GITHUB_ENV
-
+# 
 #       - name: Send notification to Slack
 #         uses: slackapi/slack-github-action@v1.26.0
 #         with:
@@ -48,3 +48,4 @@
 #             }
 #         env:
 #           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_GH_NOTIF_URL }}
+# 

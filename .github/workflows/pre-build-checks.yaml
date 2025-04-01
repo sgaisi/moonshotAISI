@@ -161,12 +161,32 @@ jobs:
             exit 1
           fi
 
-#      - name: Capture step statuses
-#        if: ${{ ! cancelled() }}
-#        run: |
-#          echo "UNIT_TESTS_STATUS=${{ steps.unit_tests.outcome }}" >> $GITHUB_ENV
-#          echo "CODE_QUALITY_STATUS=${{ steps.code_quality.outcome }}" >> $GITHUB_ENV
-#          echo "DEPENDENCY_ANALYSIS_STATUS=${{ steps.dependency_analysis.outcome }}" >> $GITHUB_ENV
+      - name: Capture step statuses
+        if: ${{ ! cancelled() }}
+        run: |
+          echo "UNIT_TESTS_STATUS=${{ steps.unit_tests.outcome }}" >> $GITHUB_ENV
+          echo "CODE_QUALITY_STATUS=${{ steps.code_quality.outcome }}" >> $GITHUB_ENV
+          echo "DEPENDENCY_ANALYSIS_STATUS=${{ steps.dependency_analysis.outcome }}" >> $GITHUB_ENV
+
+      - name: Add comment to PR
+        if: ${{ ! cancelled() }}
+        run: |
+          COMMENT: |
+            **Workflow Status:** ${{ github.repository }} | ${{ github.workflow }} | ${{ github.event.pull_request.number }}
+            **Status:** ${{ job.status }}
+            **Details:** ${{ env.UNIT_TESTS_STATUS }} | ${{ env.CODE_COVERAGE_STATUS }} | ${{ env.CODE_QUALITY_STATUS }} | ${{ env.DEPENDENCY_STATUS }} | ${{ env.LICENSE_STATUS }}
+            [View Workflow Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          
+          RESPONSE=$(curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d '{"body": "'"$COMMENT"'"}' \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments")
+
+          if [[ $? -ne 0 ]]; then
+            echo "Error posting comment: $RESPONSE"
+            exit 1
+          fi
 
       # Send slack notification
       # - name: Send slack notification
