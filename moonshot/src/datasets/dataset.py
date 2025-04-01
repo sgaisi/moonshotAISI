@@ -193,9 +193,9 @@ class Dataset:
             obj_id=ds_id,
             obj_extension="json",
             json_keys=["name", "description", "license", "reference"],
-            iterator_keys=["examples.item"],
+            iterator_keys=["examples.item","agents.item"],
         )
-
+        logger.info(f"Values are {dataset_info}")
         # Add additional parameters - [id, num_of_dataset_prompts, creation_date]
         # Append the dataset ID to the dataset_info
         dataset_info["id"] = ds_id
@@ -312,7 +312,6 @@ class Dataset:
             retn_datasets_ids = []
             ds_cache_info = Dataset.get_cache_information()
             cache_needs_update = False  # Initialize a flag to track cache updates
-
             if datasets:
                 datasets_objects = datasets
             else:
@@ -376,6 +375,7 @@ class Dataset:
         else:
             ds_info = DatasetArguments(**Dataset._read_dataset(ds_name))
             ds_info.examples = None
+            ds_info.agents = None
             ds_cache_info[ds_name] = ds_info.copy().to_dict()
             ds_cache_info[ds_name]["hash"] = file_hash
             cache_updated = True
