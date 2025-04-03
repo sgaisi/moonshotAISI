@@ -195,7 +195,6 @@ class Dataset:
             json_keys=["name", "description", "license", "reference"],
             iterator_keys=["examples.item","agents.item"],
         )
-        logger.info(f"Values are {dataset_info}")
         # Add additional parameters - [id, num_of_dataset_prompts, creation_date]
         # Append the dataset ID to the dataset_info
         dataset_info["id"] = ds_id
