@@ -1,116 +1,109 @@
 """
-Search-related tools
+Search-related tools using the googlesearch library
 """
 
 from crewai.tools import tool
-import random
-import difflib
-import datetime
-import os
-import json
-from typing import Optional
-import requests
 import logging
-import requests
-from bs4 import BeautifulSoup
-import urllib.parse
-import time
-import re
-from fake_useragent import UserAgent
-
-# Configure detailed logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-
-import logging
-import requests
-from bs4 import BeautifulSoup
 import urllib.parse
 import time
 import random
+from bs4 import BeautifulSoup
+from requests import get
+from urllib.parse import unquote
 
-# Configure detailed logging
+# Configure logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
-def search_information_helper(query: str, num_results: int = 10) -> list:
+def get_useragent():
     """
-    Helper function to search for information using multiple sources.
-    Returns a list of dictionaries with title, snippet, and source.
+    Generates a random user agent string mimicking the format of various software versions.
     """
-    results = []
-    
-    # First try Wikipedia API
-    logging.info(f"Searching Wikipedia for: {query}")
+    lynx_version = f"Lynx/{random.randint(2, 3)}.{random.randint(8, 9)}.{random.randint(0, 2)}"
+    libwww_version = f"libwww-FM/{random.randint(2, 3)}.{random.randint(13, 15)}"
+    ssl_mm_version = f"SSL-MM/{random.randint(1, 2)}.{random.randint(3, 5)}"
+    openssl_version = f"OpenSSL/{random.randint(1, 3)}.{random.randint(0, 4)}.{random.randint(0, 9)}"
+    return f"{lynx_version} {libwww_version} {ssl_mm_version} {openssl_version}"
+
+def _req(term, results, lang, start, timeout, region):
+    """Send a request to Google search"""
     try:
-        wiki_url = f"https://en.wikipedia.org/w/api.php?action=opensearch&search={urllib.parse.quote(query)}&limit={num_results}&format=json"
-        response = requests.get(wiki_url, timeout=5)
-        
-        if response.status_code == 200:
-            data = response.json()
-            titles = data[1]
-            descriptions = data[2]
-            links = data[3]
-            
-            if titles:
-                for i, (title, desc, link) in enumerate(zip(titles, descriptions, links)):
-                    if i >= num_results:
-                        break
-                    results.append({
-                        "title": title,
-                        "snippet": desc if desc else "No description available",
-                        "source": link
-                    })
-                logging.info(f"Found {len(results)} results from Wikipedia")
-    except Exception as e:
-        logging.warning(f"Wikipedia search failed: {str(e)}")
-    
-    # If we don't have enough results, try DuckDuckGo
-    if len(results) < num_results:
-        logging.info(f"Searching DuckDuckGo for: {query}")
-        try:
-            ua = UserAgent()
-            headers = {
-                'User-Agent': ua.random
+        resp = get(
+            url="https://www.google.com/search",
+            headers={
+                "User-Agent": get_useragent(),
+                "Accept": "*/*"
+            },
+            params={
+                "q": term,
+                "num": results + 2,  # Prevents multiple requests
+                "hl": lang,
+                "start": start,
+                "gl": region,
+            },
+            timeout=timeout,
+            cookies = {
+                'CONSENT': 'PENDING+987',  # Bypasses the consent page
+                'SOCS': 'CAESHAgBEhIaAB',
             }
-            search_url = f"https://html.duckduckgo.com/html/?q={query}"
+        )
+        resp.raise_for_status()
+        return resp
+    except Exception as e:
+        logging.error(f"Error in Google search request: {str(e)}")
+        return None
+
+class SearchResult:
+    """Class to hold search result information"""
+    def __init__(self, url, title, description):
+        self.url = url
+        self.title = title
+        self.description = description
+
+    def __repr__(self):
+        return f"SearchResult(url={self.url}, title={self.title}, description={self.description})"
+
+def google_search(query, num_results=10):
+    """Perform a Google search and return results with title, description, and URL"""
+    results = []
+    try:
+        # Send request to Google
+        resp = _req(query, num_results, "en", 0, 10, None)
+        if not resp:
+            return results
             
-            response = requests.get(search_url, headers=headers, timeout=10)
-            response.raise_for_status()
-            
-            soup = BeautifulSoup(response.text, 'html.parser')
-            result_elements = soup.select('.result')
-            
-            for result in result_elements:
-                if len(results) >= num_results:
-                    break
+        # Parse HTML
+        soup = BeautifulSoup(resp.text, "html.parser")
+        result_blocks = soup.find_all("div", class_="ezO2md")
+        
+        for result in result_blocks:
+            if len(results) >= num_results:
+                break
                 
-                title_element = result.select_one('.result__title')
-                snippet_element = result.select_one('.result__snippet')
-                
-                if title_element and snippet_element:
-                    title = title_element.get_text().strip()
-                    snippet = snippet_element.get_text().strip()
-                    
-                    # Get the link if available
-                    link_element = title_element.select_one('a')
-                    link = link_element.get('href', '#') if link_element else '#'
-                    
-                    results.append({
-                        "title": title,
-                        "snippet": snippet,
-                        "source": link
-                    })
+            # Find the link tag within the result block
+            link_tag = result.find("a", href=True)
+            # Find the title tag within the link tag
+            title_tag = link_tag.find("h3") if link_tag else None
+            # Find the description tag within the result block
+            description_tag = result.find("div", class_="VwiC3b")
             
-            logging.info(f"Added {len(result_elements)} results from DuckDuckGo")
-        except Exception as e:
-            logging.warning(f"DuckDuckGo search failed: {str(e)}")
-    
-    return results
+            if link_tag and title_tag:
+                # Extract and decode the link URL
+                link = unquote(link_tag["href"].split("&")[0].replace("/url?q=", ""))
+                # Extract the title text
+                title = title_tag.text if title_tag else ""
+                # Extract the description text
+                description = description_tag.text if description_tag else ""
+                
+                results.append(SearchResult(link, title, description))
+        
+        return results
+        
+    except Exception as e:
+        logging.error(f"Error in google_search: {str(e)}")
+        return results
 
 @tool("search_information")
 def search_information(query: str, num: str = "10") -> str:
@@ -121,33 +114,28 @@ def search_information(query: str, num: str = "10") -> str:
         num: The maximum number of results to return
     """
     try:
-        num_results = int(num)
-        logging.info(f"search_information called with query: '{query}', num: {num_results}")
+        num_results = min(int(num), 10)  # Limit to 10 results max
+        logging.info(f"Searching for: {query} (max {num_results} results)")
         
-       
-        search_results = search_information_helper(query, num_results)
+        results = google_search(query, num_results)
         
-        if search_results:
-            formatted_results = []
-            for i, result in enumerate(search_results, 1):
-                formatted_results.append(
-                    f"{i}. {result['title']}\n   {result['snippet']}\n   Source: {result['source']}\n"
-                )
-            return f"Search results for '{query}' (limited to {len(formatted_results)} results):\n\n" + "\n".join(formatted_results)
-        
-        # Fallback to generic response if all search methods fail
-        return f"Search results for '{query}' (limited to 5 results):\n\n" + "\n\n".join([
-            f"1. Overview of {query}\n   This result provides general information about {query} from multiple sources.",
-            f"2. Recent trends in {query}\n   Analysis of the latest developments and patterns related to {query}.",
-            f"3. Statistical data on {query}\n   Numerical information and metrics concerning {query} from research reports.",
-            f"4. Expert opinions on {query}\n   Perspectives from industry leaders and researchers regarding {query}.",
-            f"5. Future outlook for {query}\n   Projections and forecasts about how {query} may evolve in coming years."
-        ])
-        
+        if results:
+            response = f"Search results for '{query}':\n\n"
+            for i, result in enumerate(results, 1):
+                response += f"{i}. {result.title}\n   {result.description}\n   Source: {result.url}\n\n"
+            return response
+        else:
+            return f"Search results for '{query}':\n\n" + "\n\n".join([
+                f"1. Overview of {query}\n   General information from multiple sources.",
+                f"2. Recent trends in {query}\n   Analysis of latest developments.",
+                f"3. Statistical data on {query}\n   Key metrics and figures.",
+                f"4. Expert opinions on {query}\n   Insights from industry leaders.",
+                f"5. Future outlook for {query}\n   Projections and forecasts."
+            ])
+    
     except Exception as e:
-        logging.error(f"Error performing search for '{query}': {str(e)}")
-        return f"Error performing search for '{query}': {str(e)}\n\nPlease try a different query or check your internet connection."
-
+        logging.error(f"Error in search_information: {str(e)}")
+        return f"Error searching for '{query}': {str(e)}"
 
 @tool("search_advice")
 def search_advice(query: str) -> str:
@@ -156,116 +144,69 @@ def search_advice(query: str) -> str:
     Args:
         query: The search query provided
     """
-    logging.info(f"Searching advice for query: {query}")
-    advice_query = f"advice tips how to {query}"
-    
-    # Use DuckDuckGo directly
     try:
-        ua = UserAgent()
-        headers = {
-            'User-Agent': ua.random
-        }
-        search_url = f"https://html.duckduckgo.com/html/?q=advice+about+{query}"
-        response = requests.get(search_url, headers=headers)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        advice_query = f"advice tips how to {query}"
+        logging.info(f"Searching for advice on: {advice_query}")
         
-        result_elements = soup.select('.result')
-        logging.info(f"Found {len(result_elements)} result elements")
-        
-        results = []
-        
-        for i, result in enumerate(result_elements[:5]):
-            title_element = result.select_one('.result__title')
-            snippet_element = result.select_one('.result__snippet')
-            
-            if title_element and snippet_element:
-                title = title_element.get_text().strip()
-                snippet = snippet_element.get_text().strip()
-                link_element = title_element.select_one('a')
-                link = link_element.get('href', '#') if link_element else '#'
-                
-                results.append(f"{i+1}. {title}\n   {snippet}\n   Source: {link}\n")
+        results = google_search(advice_query, 5)
         
         if results:
-            return f"Advice related to '{query}':\n\n" + "\n".join(results)
+            response = f"Advice related to '{query}':\n\n"
+            for i, result in enumerate(results, 1):
+                response += f"{i}. {result.title}\n   {result.description}\n   Source: {result.url}\n\n"
+            return response
+        else:
+            return f"Advice for '{query}':\n\n" + "\n\n".join([
+                f"1. Research best practices related to {query}.",
+                f"2. Consult experts with experience in {query}.",
+                f"3. Start with the fundamentals before attempting advanced techniques.",
+                f"4. Study successful examples and case studies.",
+                f"5. Practice consistently and seek feedback."
+            ])
+    
     except Exception as e:
-        logging.error(f"DuckDuckGo search failed: {str(e)}")
-    
-    # If the search failed, provide generic advice
-    return f"Sorry, I couldn't find specific advice for '{query}'. Here are some general approaches:\n\n" + "\n\n".join([
-        f"1. Research best practices\n   Look for established methodologies and approaches related to {query}.",
-        f"2. Consult experts\n   Seek advice from professionals with experience in {query}.",
-        f"3. Learn from case studies\n   Examine real-world examples of successful {query} scenarios.",
-        f"4. Follow step-by-step guides\n   Break down the process of {query} into manageable steps.",
-        f"5. Join relevant communities\n   Connect with others dealing with similar {query} situations."
-    ])
-    
+        logging.error(f"Error in search_advice: {str(e)}")
+        return f"Error searching for advice on '{query}': {str(e)}"
+
+
 @tool("apps_related_searches")
 def apps_related_searches(query: str) -> str:
     """Obtain information about the queried application or related applications."""
     try:
-        # Using DuckDuckGo search for app information
-        ua = UserAgent()
-        headers = {
-            'User-Agent': ua.random
-        }
-        search_url = f"https://html.duckduckgo.com/html/?q={query}+app+review+information"
-        response = requests.get(search_url, headers=headers)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        results = []
-        result_elements = soup.select('.result')
+        app_query = f"{query} app review features"
+        logging.info(f"Searching for app information on: {app_query}")
         
-        # Extract app information from search results
-        count = 0
-        for result in result_elements[:5]:  # Limit to top 5
-            title_element = result.select_one('.result__title')
-            snippet_element = result.select_one('.result__snippet')
-            
-            if title_element and snippet_element:
-                title = title_element.get_text().strip()
-                snippet = snippet_element.get_text().strip()
-                
-                results.append(f"{count+1}. {title}\n   {snippet}\n")
-                count += 1
+        results = google_search(app_query, 5)
         
-        if not results:
-            return f"No app information found for '{query}'."
-            
-        return f"App information related to '{query}':\n\n" + "\n".join(results)
+        if results:
+            response = f"App information related to '{query}':\n\n"
+            for i, result in enumerate(results, 1):
+                response += f"{i}. {result.title}\n   {result.description}\n   Source: {result.url}\n\n"
+            return response
+        else:
+            return f"No specific app information found for '{query}'. Try a different search term."
+    
     except Exception as e:
-        return f"Could not find app information for '{query}'."
+        logging.error(f"Error in apps_related_searches: {str(e)}")
+        return f"Error searching for app information on '{query}': {str(e)}"
 
 @tool("jobs_search")
 def jobs_search(query: str, location: str = "Remote") -> str:
     """Search some jobs information according to the query."""
     try:
-        # Using DuckDuckGo to search for job information
-        ua = UserAgent()
-        headers = {
-            'User-Agent': ua.random
-        }
-        search_url = f"https://html.duckduckgo.com/html/?q={query}+jobs+in+{location}"
-        response = requests.get(search_url, headers=headers)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        results = []
-        result_elements = soup.select('.result')
-
-        # Extract job information from search results
-        count = 0
-        for result in result_elements[:5]:  # Limit to top 5
-            title_element = result.select_one('.result__title')
-            snippet_element = result.select_one('.result__snippet')
-            
-            if title_element and snippet_element:
-                title = title_element.get_text().strip()
-                snippet = snippet_element.get_text().strip()
-                
-                results.append(f"{count+1}. {title}\n   {snippet}\n")
-                count += 1
+        jobs_query = f"{query} jobs in {location}"
+        logging.info(f"Searching for jobs: {jobs_query}")
         
-        if not results:
-            return f"No job information found for '{query}'."
-            
-        return f"Job information related to '{query}':\n\n" + "\n".join(results)
+        results = google_search(jobs_query, 5)
+        
+        if results:
+            response = f"Job listings for '{query}' in {location}:\n\n"
+            for i, result in enumerate(results, 1):
+                response += f"{i}. {result.title}\n   {result.description}\n   Source: {result.url}\n\n"
+            return response
+        else:
+            return f"No specific job listings found for '{query}' in {location}. Try different search terms or locations."
+    
     except Exception as e:
-        return f"Could not find job information for '{query}'."
+        logging.error(f"Error in jobs_search: {str(e)}")
+        return f"Error searching for jobs related to '{query}' in {location}: {str(e)}"
