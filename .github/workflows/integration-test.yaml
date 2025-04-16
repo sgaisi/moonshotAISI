@@ -334,7 +334,7 @@ jobs:
     #         --run-description ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} \
     #         -f "./test-results/junit-report.xml"
   ##########################################################################################################################################################################
-  integration-ui-test-benchmarking:
+  integration-ui-test-benchmarking-1:
 
     runs-on: ubuntu-latest
     timeout-minutes: 300
@@ -429,7 +429,7 @@ jobs:
           ref: ${{ inputs.moonshot_integration_testing_branch }}
           path: moonshot-integration-testing-aisi
     
-    - name: Run Integration UI Test
+    - name: Run Integration UI Test 1
       env: 
         URI: ${{ secrets.URI }}
         TOKEN: ${{ secrets.TOKEN }}
@@ -449,7 +449,7 @@ jobs:
          npx playwright install
          npx playwright install-deps
          npm install dotenv --save
-         echo "Running Benchmarking UI Test Cases"
+         echo "Running Benchmarking UI Test Cases 1"
          URI="$URI" TOKEN="$TOKEN" URI2="$URI2" TOKEN2="$TOKEN2" ADDITIONAL_PARAMETERS="$ADDITIONAL_PARAMETERS" TOGETHER_TOKEN="$TOGETHER_TOKEN" OPENAI_TOKEN="$OPENAI_TOKEN" AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" GOOGLE_TOKEN="$GOOGLE_TOKEN" DEBUG=pw:api npx playwright test tests/benchmarking.spec.ts
     
     - name: Print Environment Variables
@@ -459,7 +459,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v4
       with:
-          name: playwright-trace-integration-ui-test-benchmarking-${{ github.run_id }}
+          name: playwright-trace-integration-ui-test-benchmarking-1-${{ github.run_id }}
           path: |
             /home/runner/work/moonshotAISI/moonshotAISI/moonshot-integration-testing-aisi/ui-integration-testing/test-results
             
@@ -482,6 +482,136 @@ jobs:
     #         --run-description ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} \
     #         -f "./test-results/junit-report.xml"
             
+  ##########################################################################################################################################################################
+  integration-ui-test-benchmarking-2:
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+
+    steps:
+
+    - name: Checkout Moonshot (Pull Request Review)
+      if: github.event_name == 'pull_request_review'
+      uses: actions/checkout@v4
+      with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+
+    - name: Checkout Moonshot (Workflow Dispatch)
+      if: github.event_name == 'workflow_dispatch'
+      uses: actions/checkout@v4
+      with:
+          repository: sgaisi/moonshotAISI
+          ref: ${{ inputs.moonshot_branch }}
+          
+    - name: Setup Python 3.11
+      uses: actions/setup-python@v4
+      with:
+          python-version: '3.11'
+    
+    - name: Setup Moonshot
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install -r requirements.txt
+        touch .env
+        echo "${{ secrets.ENVIRONMENT_VARS }}" >> .env
+
+    - name: Checkout Moonshot Data (Pull Request Review)
+      if: github.event_name == 'pull_request_review'
+      uses: actions/checkout@v4
+      with: 
+         repository: sgaisi/moonshot-data-aisi
+         ref: ${{ vars.MOONSHOT_DATA_BRANCH }}
+         path: moonshot-data-aisi
+
+    - name: Checkout Moonshot Data (Workflow Dispatch)
+      if: github.event_name == 'workflow_dispatch'
+      uses: actions/checkout@v4
+      with: 
+         repository: sgaisi/moonshot-data-aisi
+         ref: ${{ inputs.moonshot_data_branch }}
+         path: moonshot-data-aisi
+
+    - name: Setup Moonshot Data
+      run: |
+        source venv/bin/activate
+        cd moonshot-data-aisi
+        pip install -r requirements.txt
+
+    - name: Checkout Moonshot UI (Pull Request Review)
+      if: github.event_name == 'pull_request_review'
+      uses: actions/checkout@v4
+      with:
+        repository: sgaisi/moonshot-ui-aisi
+        ref: ${{ vars.MOONSHOT_UI_BRANCH }}
+        path: moonshot-ui-aisi
+
+    - name: Checkout Moonshot UI (Workflow Dispatch)
+      if: github.event_name == 'workflow_dispatch'
+      uses: actions/checkout@v4
+      with:
+        repository: sgaisi/moonshot-ui-aisi
+        ref: ${{ inputs.moonshot_ui_branch }}
+        path: moonshot-ui-aisi
+
+     # Download NLTK stopwords
+    - name: Download NLTK stopwords
+      run: |
+        source venv/bin/activate
+        pip install nltk
+        python -c "import nltk; nltk.download('stopwords');nltk.download('punkt');nltk.download('punkt_tab');nltk.download('averaged_perceptron_tagger_eng')"
+    
+    - name: Setup Moonshot UI
+      run: |
+        source venv/bin/activate
+        cd moonshot-ui-aisi
+        npm install
+        npm run build
+        cd ../
+        nohup python -m moonshot web &
+
+    - name: Checkout Integration Test
+      uses: actions/checkout@v4
+      with:
+          repository: sgaisi/moonshot-integration-testing-aisi
+          ref: ${{ inputs.moonshot_integration_testing_branch }}
+          path: moonshot-integration-testing-aisi
+    
+    - name: Run Integration UI Test 2
+      env: 
+        URI: ${{ secrets.URI }}
+        TOKEN: ${{ secrets.TOKEN }}
+        URI2: ${{ secrets.URI2 }}
+        TOKEN2: ${{ secrets.TOKEN2 }}
+        ADDITIONAL_PARAMETERS: ${{ secrets.ADDITIONAL_PARAMETERS }}
+        TOGETHER_TOKEN: ${{ secrets.TOGETHER_TOKEN }}
+        OPENAI_TOKEN: ${{ secrets.OPENAI_TOKEN }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        GOOGLE_TOKEN: ${{ secrets.GOOGLE_TOKEN }}
+      id: integrationuitest
+      run: |
+         source venv/bin/activate
+         cd moonshot-integration-testing-aisi/ui-integration-testing
+         npm ci
+         npx playwright install
+         npx playwright install-deps
+         npm install dotenv --save
+         echo "Running Benchmarking UI Test Cases 2"
+         URI="$URI" TOKEN="$TOKEN" URI2="$URI2" TOKEN2="$TOKEN2" ADDITIONAL_PARAMETERS="$ADDITIONAL_PARAMETERS" TOGETHER_TOKEN="$TOGETHER_TOKEN" OPENAI_TOKEN="$OPENAI_TOKEN" AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" GOOGLE_TOKEN="$GOOGLE_TOKEN" DEBUG=pw:api npx playwright test tests/benchmarking-2.spec.ts
+    
+    - name: Print Environment Variables
+      run: env
+      
+    - name: Upload Playwright Traces
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+          name: playwright-trace-integration-ui-test-benchmarking-2-${{ github.run_id }}
+          path: |
+            /home/runner/work/moonshotAISI/moonshotAISI/moonshot-integration-testing-aisi/ui-integration-testing/test-results
+
 ##########################################################################################################################################################################
   integration-ui-test-red-teaming:
 
