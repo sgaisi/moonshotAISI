@@ -175,3 +175,5 @@ moonshot/data/sessions/*.json
 # build files
 dist/
 *.db
+moonshot-data-aisi
+moonshot-ui-aisi
