@@ -15,7 +15,7 @@ on:
   push:
     branches: [ "main" ]
   pull_request:
-    branches: [ "dev_main" ]
+    branches: [ "dev_main", "main" ]
 #  # Trigger every Friday at 10:05pm (14:05 UTC)
 #  # cron: min hr day-of-mth mth day-of-week
 #  schedule:
@@ -140,18 +140,39 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
 
-    # Send slack notification
-    - name: Send slack notification
+    - name: Add comment to PR
       if: ${{ ! cancelled() }}
-      uses: slackapi/slack-github-action@v1.26.0
-      with:
-        payload: |
-          {
-            "workflow": "${{ github.repository }} - ${{ github.workflow }} - ${{ env.PR_NUM }}",
-            "status": "SAST: ${{ steps.codeql_summary.outcome }}",
-            "details": "${{ env.CODEQL_SUMMARY }}",
-            "ref": "${{ github.server_url }}/${{ github.repository }}/security/code-scanning"
-          }
+      run: |
+        COMMENT="CodeQL Analysis Complete: \
+          \nStatus: SAST: ${{ steps.codeql_summary.outcome }} \
+          \nDetails: ${{ env.CODEQL_SUMMARY }} \
+          \nReference: ${{ github.server_url }}/${{ github.repository }}/security/code-scanning"
+
+        curl -L \
+          -X POST \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer $GH_TOKEN" \
+          https://api.github.com/repos/${{ github.repository }}/pulls/${{ env.PR_NUM }}/commits \
+          -d '{"body": "'"$COMMENT"'"}'
+
+        if [[ $? -ne 0 ]]; then
+          echo "Error posting comment"
+          exit 1
+        fi
       env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        
+        GH_TOKEN: ${{ github.token }}
+
+    # # Send slack notification
+    # - name: Send slack notification
+    #   if: ${{ ! cancelled() }}
+    #   uses: slackapi/slack-github-action@v1.26.0
+    #   with:
+    #     payload: |
+    #       {
+    #         "workflow": "${{ github.repository }} - ${{ github.workflow }} - ${{ env.PR_NUM }}",
+    #         "status": "SAST: ${{ steps.codeql_summary.outcome }}",
+    #         "details": "${{ env.CODEQL_SUMMARY }}",
+    #         "ref": "${{ github.server_url }}/${{ github.repository }}/security/code-scanning"
+    #       }
+    #   env:
+    #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
