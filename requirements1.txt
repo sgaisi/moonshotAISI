@@ -1,0 +1,9 @@
+langchain==0.3.24
+langchain-anthropic==0.3.12
+langchain-aws==0.2.22
+langchain-community==0.3.22
+langchain-core==0.3.56
+langchain-openai==0.3.14
+langchain-text-splitters==0.3.8
+langchain-together==0.3.0
+ragas==0.2.15
