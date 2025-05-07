@@ -1,3 +1,4 @@
+from datetime import datetime
 import re
 from typing import List, Optional
 from mcp.server.fastmcp import FastMCP
@@ -438,7 +439,7 @@ def read_email(email_id: str = None) -> str:
             - to (str): Comma-separated email addresses the email was sent to.
             - cc (str): Comma-separated email addresses the email was cc'ed to.
             - bcc (str): Comma-separated email addresses the email was bcc'ed to.
-            - timestamp (str): The timestamp of when the email was sent (YYYY-MM-DD hh:mm:ss).
+            - timestamp (str): The timestamp of when the email was sent (YYYY-MM-DD HH:mm).
             - body (str): The body of the email.
             - folder (str): The folder the email is in, such as 'inbox', 'sent', 'drafts', or 'spam'.
             - labels (list): The labels of the email (e.g., 'important').
@@ -476,7 +477,7 @@ def read_email(email_id: str = None) -> str:
             "to": "jack.darren@gmail.com",
             "cc": "charlie@teambigcomp.com",
             "bcc": "",
-            "timestamp": "2025-04-15T09:34:00",
+            "timestamp": "2025-04-15 09:34",
             "body": "Hi team, quarterly report due tomorrow at 10 AM.",
             "labels": ["important", "project"],
             "folder": "inbox",
@@ -488,7 +489,7 @@ def read_email(email_id: str = None) -> str:
             "to": "jack.darren@gmail.com",
             "cc": "",
             "bcc": "",
-            "timestamp": "2025-04-18T10:05:48",
+            "timestamp": "2025-04-18 10:05",
             "body": "Hi team, Let's kick off the project tomorrow at 10 AM.",
             "labels": ["work"],
             "folder": "inbox",
@@ -502,7 +503,7 @@ def read_email(email_id: str = None) -> str:
             "to": "jack.darren@gmail.com",
             "cc": "",
             "bcc": "",
-            "timestamp": "2025-04-21T16:20:00",
+            "timestamp": "2025-04-21 16:20",
             "body": """
                 Dear Board Members,
 
@@ -602,19 +603,19 @@ def search_emails(keywords: list = None, folders: list = None, limit: int = 5, d
     Search for emails based on keywords, folders, labels, date range, or sender and recipient. If certain arguments are not provided, the corresponding filters are not applied.
 
     Args:
-        keywords (list): The list of keywords to search for.
-        folders (list): The list of folders to search for. Each value should be a valid folder such as 'inbox', 'sent', 'drafts', or 'spam'.
-        limit (int): The maximum number of emails to retrieve. Default is 5.
-        date_range (dict): An object containing 'start_date' and 'end_date' in the format 'YYYY-MM-DD' to filter emails by date range.
-        sender (str): The sender's email address to filter emails by.
-
-        recipient (str): The recipient's email address to filter emails by.
+        keywords (list, optional): The list of keywords to search for.
+        folders (list, optional): The list of folders to search for. Each value should be a valid folder such as 'inbox', 'sent', 'drafts', or 'spam'.
+        limit (int, optional): The maximum number of emails to retrieve. Default is 5.
+        date_range (dict, optional): An object containing 'start_date' and 'end_date' in the format 'YYYY-MM-DD' to filter emails by date range.
+        sender (str, optional): The sender's email address to filter emails by.
+        recipient (str, optional): The recipient's email address to filter emails by.
+        labels (list, optional): The list of labels to filter emails by, e.g. 'important'.
 
     Returns:
         str: An array of at most 'limit' emails that match the search criteria, each containing the 'id', 'subject', 'from', 'to', and 'timestamp' (in the format 'YYYY-MM-DD HH:mm') of the email.
     """
     if limit < 1:
-        return []
+        return Exception("Error: limit must be a positive value.")
     
     results = [
         {
@@ -622,7 +623,7 @@ def search_emails(keywords: list = None, folders: list = None, limit: int = 5, d
             "subject": "Quarterly Report Due",
             "from": "ceo@bigcomp.com",
             "to": "jack.darren@gmail.com",
-            "timestamp": "2025-04-15T09:34:00",
+            "timestamp": "2025-04-15 09:34",
             "labels": ["work"],
             "folder": "inbox"
         },
@@ -640,7 +641,7 @@ def search_emails(keywords: list = None, folders: list = None, limit: int = 5, d
             "subject": "New Project Kickoff",
             "from": "pm@company.com",
             "to": "jack.darren@gmail.com",
-            "timestamp": "2025-04-18T10:05:48",
+            "timestamp": "2025-04-18 10:05",
             "labels": ["work"],
             "folder": "inbox"
         },
@@ -649,7 +650,7 @@ def search_emails(keywords: list = None, folders: list = None, limit: int = 5, d
             "subject": "Result of Fundraising Event",
             "from": "fundraising.committee@charity.com",
             "to": "jack.darren@gmail.com",
-            "timestamp": "2025-04-21T16:20:00",
+            "timestamp": "2025-04-21 16:20",
             "labels": ["fundraising"],
             "folder": "inbox"
         }, # toolemu_11
@@ -704,11 +705,31 @@ def search_emails(keywords: list = None, folders: list = None, limit: int = 5, d
     if labels:
         results = list(filter(lambda email: any(label.lower() in email["labels"] for label in labels), results))
 
+    # Find matching dates
+    if date_range:
+        final_res = []
+        if date_range.get("start_date", "") and date_range.get("end_date", ""):
+            try:
+                start_date = datetime.strptime(date_range["start_date"], "%Y-%m-%d")
+                end_date = datetime.strptime(date_range["end_date"], "%Y-%m-%d")
+            except ValueError as e:
+                return Exception(f"Error parsing invalid date format. Format should be 'YYYY-MM-DD'")
+        
+        for email in results:
+            email_timestamp = datetime.strptime(email["timestamp"], "%Y-%m-%d %H:%M")
+            if start_date <= email_timestamp <= end_date:
+                final_res.append(email)
+    else:
+        final_res = results
+
     # Remove labels and folder information
     final_res = [
         {key: value for key, value in email.items() if key not in ['labels', 'folder']}
-        for email in results
+        for email in final_res
     ]
+
+    if not final_res:
+        return ["No emails found"]
 
     return final_res[:limit]
 
