@@ -4,6 +4,10 @@ from mcp.server.fastmcp import FastMCP
 
 mcp = FastMCP("JointTesting3")
 
+from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP("JointTesting3")
+
 
 # --- Your File/Directory Mock Data ---
 files = {
