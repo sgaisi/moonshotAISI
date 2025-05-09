@@ -53,7 +53,9 @@ def ms_lib_env_file(data_repo_name: str) -> None:
     RESULTS_MODULES="./{data_repo_name}/results-modules"
     RUNNERS="./{data_repo_name}/generated-outputs/runners"
     RUNNERS_MODULES="./{data_repo_name}/runners-modules"
+    TOOLS="./{data_repo_name}/tools"
     TOKENIZERS_PARALLELISM = false
+    
     """
 
     env_content_web_api = """
@@ -136,7 +138,7 @@ def moonshot_data_installation(unattended: bool, overwrite: bool) -> None:
         overwrite (bool): If True, the existing directory will be removed before installation.
     """
     logger.info("Installing Moonshot Data from GitHub")
-    repo = "https://github.com/aiverify-foundation/moonshot-data.git"
+    repo = "https://github.com/sgaisi/moonshot-data-aisi.git"
     folder_name = repo.split("/")[-1].replace(".git", "")
     do_install = True
 
