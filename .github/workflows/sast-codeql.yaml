@@ -141,17 +141,17 @@ jobs:
         GH_TOKEN: ${{ github.token }}
 
     # Send slack notification
-    - name: Send slack notification
-      if: ${{ ! cancelled() }}
-      uses: slackapi/slack-github-action@v1.26.0
-      with:
-        payload: |
-          {
-            "workflow": "${{ github.repository }} - ${{ github.workflow }} - ${{ env.PR_NUM }}",
-            "status": "SAST: ${{ steps.codeql_summary.outcome }}",
-            "details": "${{ env.CODEQL_SUMMARY }}",
-            "ref": "${{ github.server_url }}/${{ github.repository }}/security/code-scanning"
-          }
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    # - name: Send slack notification
+    #   if: ${{ ! cancelled() }}
+    #   uses: slackapi/slack-github-action@v1.26.0
+    #   with:
+    #     payload: |
+    #       {
+    #         "workflow": "${{ github.repository }} - ${{ github.workflow }} - ${{ env.PR_NUM }}",
+    #         "status": "SAST: ${{ steps.codeql_summary.outcome }}",
+    #         "details": "${{ env.CODEQL_SUMMARY }}",
+    #         "ref": "${{ github.server_url }}/${{ github.repository }}/security/code-scanning"
+    #       }
+    #   env:
+    #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         
