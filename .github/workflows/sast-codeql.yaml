@@ -15,7 +15,7 @@ on:
   push:
     branches: [ "main" ]
   pull_request:
-    branches: [ "dev_main" ]
+    branches: [ "dev_main", "main" ]
 #  # Trigger every Friday at 10:05pm (14:05 UTC)
 #  # cron: min hr day-of-mth mth day-of-week
 #  schedule:

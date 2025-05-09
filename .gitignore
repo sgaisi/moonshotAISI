@@ -177,5 +177,5 @@ dist/
 *.db
 
 # Other Moonshot folders
-/moonshot-ui-aisi
-/moonshot-data-aisi
+moonshot-data-aisi
+moonshot-ui-aisi

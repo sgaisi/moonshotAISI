@@ -215,7 +215,7 @@ def moonshot_ui_installation(unattended: bool, overwrite: bool) -> None:
         return
 
     logger.info("Installing Moonshot UI from GitHub")
-    repo = "https://github.com/aiverify-foundation/moonshot-ui.git"
+    repo = "https://github.com/sgaisi/moonshot-ui-aisi.git"
     folder_name = repo.split("/")[-1].replace(".git", "")
     do_install = True
 
@@ -271,11 +271,11 @@ def run_moonshot_ui() -> None:
     To start a thread to run the Moonshot UI
     """
     base_directory = os.getcwd()
-    ui_dir = os.path.join(base_directory, "moonshot-ui")
+    ui_dir = os.path.join(base_directory, "moonshot-ui-aisi")
 
     if not os.path.exists(ui_dir):
         logger.error(
-            "moonshot-ui does not exist. Please run with '-i moonshot-ui' to install moonshot-ui first."
+            "moonshot-ui-aisi does not exist. Please run with '-i moonshot-ui-aisi' to install moonshot-ui-aisi first."
         )
         sys.exit(1)
     # ms_ui_env_file(ui_dev_dir)
@@ -298,7 +298,7 @@ def main() -> None:
         "-i",
         "--install",
         action="append",
-        choices=["moonshot-data", "moonshot-ui"],
+        choices=["moonshot-data-aisi", "moonshot-ui-aisi"],
         help="Modules to install",
         default=[],
     )
@@ -321,10 +321,10 @@ def main() -> None:
     args = parser.parse_args()
 
     # Handle installations based on the -i include arguments
-    if "moonshot-data" in args.install:
+    if "moonshot-data-aisi" in args.install:
         moonshot_data_installation(args.unattended, args.overwrite)
 
-    if "moonshot-ui" in args.install:
+    if "moonshot-ui-aisi" in args.install:
         moonshot_ui_installation(args.unattended, args.overwrite)
 
     # If mode is not specified, skip running any modes
