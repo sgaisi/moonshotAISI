@@ -24,6 +24,9 @@ class RecipeArguments(BaseModel):
     # prompt_templates (list): The list of prompt templates in the recipe.
     prompt_templates: list[str]
 
+    # tools (str) : The list of tools used in the recipe.
+    tools: list[str] 
+
     # metrics (list): The list of metrics in the recipe.
     metrics: list[str] = Field(min_length=1)
 

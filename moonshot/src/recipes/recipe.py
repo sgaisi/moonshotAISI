@@ -25,6 +25,7 @@ class Recipe:
         self.datasets = rec_args.datasets
         self.prompt_templates = rec_args.prompt_templates
         self.metrics = rec_args.metrics
+        self.tools = rec_args.tools
         self.grading_scale = rec_args.grading_scale
         self.stats = rec_args.stats
 
