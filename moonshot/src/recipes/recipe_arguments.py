@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
@@ -25,7 +25,7 @@ class RecipeArguments(BaseModel):
     prompt_templates: list[str]
 
     # tools (str) : The list of tools used in the recipe.
-    tools: list[str] 
+    tools: Optional[list[str]] = None
 
     # metrics (list): The list of metrics in the recipe.
     metrics: list[str] = Field(min_length=1)
