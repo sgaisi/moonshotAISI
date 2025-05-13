@@ -276,7 +276,7 @@ def run_moonshot_ui() -> None:
 
     if not os.path.exists(ui_dir):
         logger.error(
-            "moonshot-ui does not exist. Please run with '-i moonshot-ui' to install moonshot-ui first."
+            "moonshot-ui-aisi does not exist. Please run with '-i moonshot-ui-aisi' to install moonshot-ui-aisi first."
         )
         sys.exit(1)
     # ms_ui_env_file(ui_dev_dir)
