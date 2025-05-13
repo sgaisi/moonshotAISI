@@ -139,6 +139,7 @@ def moonshot_data_installation(unattended: bool, overwrite: bool) -> None:
     """
     logger.info("Installing Moonshot Data from GitHub")
     repo = "https://github.com/sgaisi/moonshot-data-aisi.git"
+    branch = "jointTesting"
     folder_name = repo.split("/")[-1].replace(".git", "")
     do_install = True
 
@@ -169,9 +170,9 @@ def moonshot_data_installation(unattended: bool, overwrite: bool) -> None:
                 )
 
     if do_install:
-        logger.info(f"Cloning {repo}")
+        logger.info(f"Cloning {repo} and Branch {branch}")
         # Clone the repository
-        run_subprocess(["git", "clone", repo], check=True)
+        run_subprocess(["git", "clone", repo,"-b",branch], check=True)
 
         # Create .env to point to installed folder
         ms_lib_env_file(folder_name)
@@ -215,7 +216,7 @@ def moonshot_ui_installation(unattended: bool, overwrite: bool) -> None:
         return
 
     logger.info("Installing Moonshot UI from GitHub")
-    repo = "https://github.com/aiverify-foundation/moonshot-ui.git"
+    repo = "https://github.com/sgaisi/moonshot-ui-aisi.git"
     folder_name = repo.split("/")[-1].replace(".git", "")
     do_install = True
 
@@ -271,7 +272,7 @@ def run_moonshot_ui() -> None:
     To start a thread to run the Moonshot UI
     """
     base_directory = os.getcwd()
-    ui_dir = os.path.join(base_directory, "moonshot-ui")
+    ui_dir = os.path.join(base_directory, "moonshot-ui-aisi")
 
     if not os.path.exists(ui_dir):
         logger.error(
@@ -298,7 +299,7 @@ def main() -> None:
         "-i",
         "--install",
         action="append",
-        choices=["moonshot-data", "moonshot-ui"],
+        choices=["moonshot-data-aisi", "moonshot-ui-aisi"],
         help="Modules to install",
         default=[],
     )
@@ -321,10 +322,10 @@ def main() -> None:
     args = parser.parse_args()
 
     # Handle installations based on the -i include arguments
-    if "moonshot-data" in args.install:
+    if "moonshot-data-aisi" in args.install:
         moonshot_data_installation(args.unattended, args.overwrite)
 
-    if "moonshot-ui" in args.install:
+    if "moonshot-ui-aisi" in args.install:
         moonshot_ui_installation(args.unattended, args.overwrite)
 
     # If mode is not specified, skip running any modes
