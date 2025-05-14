@@ -32,7 +32,7 @@ class DatasetArguments(BaseModel):
     license: str = ""
 
     # agents (Iterator[dict] | None): Generator of agents from the dataset, where each agent is a dictionary.
-    agents: Iterator[dict] | None
+    agents: Iterator[dict] | None = None
 
     def to_dict(self) -> dict:
         """
