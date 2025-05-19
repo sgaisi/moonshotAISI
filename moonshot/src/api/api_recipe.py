@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import conlist, validate_call
 
 from moonshot.src.recipes.recipe import Recipe
@@ -17,6 +18,7 @@ def api_create_recipe(
     prompt_templates: list[str],
     metrics: list[str],
     grading_scale: dict[str, list[int]],
+    tools: Optional[list[str]]
 ) -> str:
     """
     Creates a new recipe with the given parameters.
@@ -49,6 +51,7 @@ def api_create_recipe(
         prompt_templates=prompt_templates,
         metrics=metrics,
         grading_scale=grading_scale,
+        tools=tools,
     )
     return Recipe.create(rec_args)
 

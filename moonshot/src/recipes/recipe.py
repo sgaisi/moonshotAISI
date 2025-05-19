@@ -74,6 +74,7 @@ class Recipe:
                 "tags": rec_args.tags,
                 "categories": rec_args.categories,
                 "datasets": rec_args.datasets,
+                "tools": rec_args.tools,
                 "prompt_templates": rec_args.prompt_templates,
                 "metrics": rec_args.metrics,
                 "grading_scale": rec_args.grading_scale,

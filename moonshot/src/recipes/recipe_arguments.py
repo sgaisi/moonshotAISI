@@ -107,4 +107,5 @@ class RecipeArguments(BaseModel):
             "metrics": self.metrics,
             "grading_scale": self.grading_scale,
             "stats": self.stats,
+            "tools": self.tools,
         }
