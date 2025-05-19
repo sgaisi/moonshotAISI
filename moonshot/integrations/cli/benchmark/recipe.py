@@ -1,3 +1,4 @@
+import ast
 import asyncio
 from ast import literal_eval
 
@@ -132,12 +133,17 @@ def add_recipe(args) -> None:
         ):
             raise TypeError(ERROR_BENCHMARK_ADD_RECIPE_GRADING_SCALE_VALIDATION)
         
-        if (
-            not isinstance(args.tools, str)
-            or not args.tools
-            or args.tools is None
-        ):
-            raise TypeError(ERROR_BENCHMARK_ADD_RECIPE_TOOLS_VALIDATION)
+        
+        parsed_tools = []
+        if args.tools is not None:
+            try:
+                parsed_tools = ast.literal_eval(args.tools)
+                if not isinstance(parsed_tools, list) or not all(isinstance(t, str) and t.strip() for t in parsed_tools):
+                    raise ValueError
+            except Exception:
+                raise TypeError(ERROR_BENCHMARK_ADD_RECIPE_TOOLS_VALIDATION)
+
+
 
         tags = literal_eval(args.tags)
         categories = literal_eval(args.categories)
@@ -145,7 +151,7 @@ def add_recipe(args) -> None:
         prompt_templates = literal_eval(args.prompt_templates)
         metrics = literal_eval(args.metrics)
         grading_scale = literal_eval(args.grading_scale)
-        tools = literal_eval(args.tools)
+        tools = parsed_tools
 
         if not (isinstance(tags, list) and all(isinstance(tag, str) for tag in tags)):
             raise ValueError(ERROR_BENCHMARK_ADD_RECIPE_TAGS_LIST_STR_VALIDATION)
@@ -739,7 +745,7 @@ def _generate_recipe_table(recipes: list, endpoints: list, results: dict) -> Non
 # ------------------------------------------------------------------------------
 # Add recipe arguments
 add_recipe_args = cmd2.Cmd2ArgumentParser(
-    description="Add a new recipe. The 'name' argument will be slugified to create a unique identifier.",
+    description="Add a new recipe. The 'name' argument will be slugified to create a unique identifier, 'tools' argument is optional.",
     epilog="Example:\n add_recipe 'My new recipe' "
     "'I am recipe description' "
     "\"['category1','category2']\" "
@@ -803,7 +809,7 @@ update_recipe_args = cmd2.Cmd2ArgumentParser(
     "  prompt_templates: A list of prompt templates for the recipe. \n"
     "  metrics: A list of metrics to evaluate the recipe. \n"
     "  grading_scale: A list of grading scale used in the recipe. \n"
-    "  tools: A list of tools used in the recipe.\n\n"
+    "  tools: A list of tools used in the recipe (optional).\n\n"
     "Example command:\n"
     "  update_recipe my-new-recipe \"[('name', 'My Updated Recipe'), ('tags', ['fairness', 'bbq'])]\" ",
 )
