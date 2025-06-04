@@ -31,9 +31,6 @@ class DatasetArguments(BaseModel):
     # license (str): License information for the dataset. Defaults to an empty string if not provided.
     license: str = ""
 
-    # agents (Iterator[dict] | None): Generator of agents from the dataset, where each agent is a dictionary.
-    agents: Iterator[dict] | None = None
-
     def to_dict(self) -> dict:
         """
         Converts the DatasetArguments object to a dictionary.
@@ -51,5 +48,4 @@ class DatasetArguments(BaseModel):
             "created_date": self.created_date,
             "reference": self.reference,
             "license": self.license,
-            "agents": self.agents
         }

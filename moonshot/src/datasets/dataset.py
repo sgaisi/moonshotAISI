@@ -193,7 +193,7 @@ class Dataset:
             obj_id=ds_id,
             obj_extension="json",
             json_keys=["name", "description", "license", "reference"],
-            iterator_keys=["examples.item","agents.item"],
+            iterator_keys=["examples.item"],
         )
         # Add additional parameters - [id, num_of_dataset_prompts, creation_date]
         # Append the dataset ID to the dataset_info
@@ -374,7 +374,6 @@ class Dataset:
         else:
             ds_info = DatasetArguments(**Dataset._read_dataset(ds_name))
             ds_info.examples = None
-            ds_info.agents = None
             ds_cache_info[ds_name] = ds_info.copy().to_dict()
             ds_cache_info[ds_name]["hash"] = file_hash
             cache_updated = True
