@@ -135,7 +135,7 @@ def add_recipe(args) -> None:
         
         
         parsed_tools = []
-        if args.tools is not None:
+        if hasattr(args, 'tools') and args.tools is not None:
             try:
                 parsed_tools = ast.literal_eval(args.tools)
                 if not isinstance(parsed_tools, list) or not all(isinstance(t, str) and t.strip() for t in parsed_tools):
