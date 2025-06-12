@@ -1,4 +1,4 @@
-from typing import Iterator
+from typing import Iterator, Optional
 
 from pydantic import BaseModel
 
@@ -31,8 +31,8 @@ class DatasetArguments(BaseModel):
     # license (str): License information for the dataset. Defaults to an empty string if not provided.
     license: str = ""
 
-    # agents (Iterator[dict] | None): Generator of agents from the dataset, where each agent is a dictionary.
-    agents: Iterator[dict] | None = None
+    # system_prompt (Optional[str]): Custom system prompt for this dataset. Takes highest priority in prompt resolution.
+    system_prompt: Optional[str] = None
 
     def to_dict(self) -> dict:
         """
@@ -40,7 +40,7 @@ class DatasetArguments(BaseModel):
 
         Returns:
             dict: A dictionary representation of the DatasetArguments object, including the id, name, description,
-                  examples, number of dataset prompts, created date, reference, and license.
+                  examples, number of dataset prompts, created date, reference, license, and prompt fields.
         """
         return {
             "id": self.id,
@@ -51,5 +51,5 @@ class DatasetArguments(BaseModel):
             "created_date": self.created_date,
             "reference": self.reference,
             "license": self.license,
-            "agents": self.agents
+            "system_prompt": self.system_prompt,
         }

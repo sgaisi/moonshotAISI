@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel, Field
 
 
@@ -16,13 +18,16 @@ class CookbookArguments(BaseModel):
         min_length=1
     )  # recipes (list): A list of recipes included in the Cookbook.
 
+    # system_prompt (Optional[str]): Custom system prompt for this cookbook. Third priority in prompt resolution.
+    system_prompt: Optional[str] = None
+
     def to_dict(self) -> dict:
         """
         Converts the CookbookArguments instance into a dictionary.
 
         This method takes all the attributes of the CookbookArguments instance and constructs a dictionary
         with attribute names as keys and their corresponding values. This includes the id, name, description,
-        and recipes.
+        recipes, and prompt fields.
 
         This dictionary can be used for serialization purposes, such as storing the cookbook information in a JSON file
         or sending it over a network.
@@ -37,4 +42,5 @@ class CookbookArguments(BaseModel):
             "categories": self.categories,
             "description": self.description,
             "recipes": self.recipes,
+            "system_prompt": self.system_prompt,
         }

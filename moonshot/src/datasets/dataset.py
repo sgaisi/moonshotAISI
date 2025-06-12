@@ -57,6 +57,7 @@ class Dataset:
                 "description": ds_args.description,
                 "reference": ds_args.reference,
                 "license": ds_args.license,
+                "system_prompt": ds_args.system_prompt,
             }
 
             examples = ds_args.examples
@@ -192,8 +193,8 @@ class Dataset:
             obj_type=EnvVariables.DATASETS.name,
             obj_id=ds_id,
             obj_extension="json",
-            json_keys=["name", "description", "license", "reference"],
-            iterator_keys=["examples.item","agents.item"],
+            json_keys=["name", "description", "license", "reference", "system_prompt"],
+            iterator_keys=["examples.item"],
         )
         # Add additional parameters - [id, num_of_dataset_prompts, creation_date]
         # Append the dataset ID to the dataset_info
@@ -374,7 +375,6 @@ class Dataset:
         else:
             ds_info = DatasetArguments(**Dataset._read_dataset(ds_name))
             ds_info.examples = None
-            ds_info.agents = None
             ds_cache_info[ds_name] = ds_info.copy().to_dict()
             ds_cache_info[ds_name]["hash"] = file_hash
             cache_updated = True

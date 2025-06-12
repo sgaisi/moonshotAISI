@@ -36,6 +36,9 @@ class RecipeArguments(BaseModel):
     # stats (dict): A dictionary containing statistics about the recipe.
     stats: dict = {}
 
+    # system_prompt (Optional[str]): Custom system prompt for this recipe. Second priority in prompt resolution.
+    system_prompt: Optional[str] = None
+
     def __init__(self, **data: Any):
         super().__init__(**data)
         self.validate_grading_scale()
@@ -108,4 +111,5 @@ class RecipeArguments(BaseModel):
             "grading_scale": self.grading_scale,
             "stats": self.stats,
             "tools": self.tools,
+            "system_prompt": self.system_prompt,
         }

@@ -23,6 +23,7 @@ class Cookbook:
         self.tags = cb_args.tags
         self.categories = cb_args.categories
         self.recipes = cb_args.recipes
+        self.system_prompt = cb_args.system_prompt
 
     @classmethod
     def load(cls, cb_id: str) -> Cookbook:
@@ -70,6 +71,7 @@ class Cookbook:
                 "tags": Cookbook.get_tags_in_recipes(cb_args.recipes),
                 "categories": Cookbook.get_categories_in_recipes(cb_args.recipes),
                 "recipes": cb_args.recipes,
+                "system_prompt": cb_args.system_prompt,
             }
 
             # check if the cookbook exists

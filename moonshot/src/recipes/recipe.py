@@ -28,6 +28,7 @@ class Recipe:
         self.tools = rec_args.tools
         self.grading_scale = rec_args.grading_scale
         self.stats = rec_args.stats
+        self.system_prompt = rec_args.system_prompt
 
     @classmethod
     def load(cls, rec_id: str) -> Recipe:
@@ -78,6 +79,8 @@ class Recipe:
                 "prompt_templates": rec_args.prompt_templates,
                 "metrics": rec_args.metrics,
                 "grading_scale": rec_args.grading_scale,
+                "system_prompt": rec_args.system_prompt,
+                                        
             }
 
             # check if the recipe exists
