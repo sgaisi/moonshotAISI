@@ -83,71 +83,92 @@ def api_download_dataset(
     return Dataset.create(ds_args)
 
 
+def normalize_examples(raw_examples: list[dict]) -> list[dict]:
+    sample_fields = {
+        "input": ("input", "question", "prompt"),
+        "target": ("target", "answer", "label"),
+    }
+
+    converted = []
+    for idx, item in enumerate(raw_examples):
+        input_data = None
+        for field in sample_fields["input"]:
+            if field in item and item[field]:
+                input_data = item[field]
+                break
+        if isinstance(input_data, list):
+            input_data = " ".join(part.get("content", "") for part in input_data)
+            
+        target_data = None
+        for field in sample_fields["target"]:
+            if field in item and item[field]:
+                target_data = item[field]
+                break
+        if isinstance(target_data, list):
+            if target_data and target_data[0]:
+                target_data = target_data[0]
+        if isinstance(target_data, dict):
+            target_data = target_data.get("content", "")
+
+        converted.append({
+            "id": item.get("id", str(idx)),
+            "input": input_data,
+            "target": target_data,
+        })
+
+    return converted
+
 def api_convert_dataset(
     name: str, description: str, reference: str, license: str, file_path: str
 ) -> str:
     """
-    Converts a CSV or JSON file to a dataset and creates a new dataset with the provided details.
-
-    This function takes the name, description, reference, and license for a new dataset as input, along with the file
-    path to a CSV file. It then creates a new DatasetArguments object with these details and an empty id. The id is left
-    empty because it will be generated from the name during the creation process. The function then calls the Dataset's
-    create method to create the new dataset.
+    Converts a JSON, JSONL (Inspect-style), or CSV file to a Moonshot dataset and registers it.
 
     Args:
         name (str): The name of the new dataset.
         description (str): A brief description of the new dataset.
         reference (str): A reference link for the new dataset.
         license (str): The license of the new dataset.
-        file_path (str): The file path to the CSV or JSONfile.
+        file_path (str): Path to .json, .jsonl, or .csv file.
 
     Returns:
         str: The ID of the newly created dataset.
     """
-    ds_args = None
+    if not (file_path.endswith(".json") or file_path.endswith(".jsonl") or file_path.endswith(".csv")):
+        raise ValueError("Unsupported file format. Please provide a JSON, JSONL, or CSV file.")
 
-    # Check if file is in a supported format
-    if not (file_path.endswith(".json") or file_path.endswith(".csv")):
-        raise ValueError("Unsupported file format. Please provide a JSON or CSV file.")
-
-    # Check that file is not empty
     if os.path.getsize(file_path) == 0:
         raise ValueError("The uploaded file is empty.")
 
-    # if file is already in json format
-    if file_path.endswith(".json"):
-        json_data = json.load(open(file_path))
+    try:
+        if file_path.endswith(".json"):
+            with open(file_path, encoding='utf-8') as f:
+                json_data = json.load(f)
+                
+            raw_examples = json_data if isinstance(json_data, list) else json_data.get("examples", [])
+            examples = normalize_examples(raw_examples)
 
-        try:
-            if "examples" in json_data and json_data["examples"]:
-                ds_args = DatasetArguments(
-                    id="",
-                    name=json_data.get("name", name),
-                    description=json_data.get("description", description),
-                    reference=json_data.get("reference", reference),
-                    license=json_data.get("license", license),
-                    examples=iter(json_data["examples"]),
-                )
-            else:
-                raise KeyError(
-                    "examples is either empty or this key is not in the JSON file. "
-                    "Please ensure that this field is present."
-                )
-        except Exception as e:
-            raise e
+        elif file_path.endswith(".csv"):
+            raw_examples = Dataset.convert_data(file_path)
+            examples = normalize_examples(raw_examples)
 
-    # if file is in csv format, convert data
-    else:
-        try:
-            examples = Dataset.convert_data(file_path)
-            ds_args = DatasetArguments(
-                id="",
-                name=name,
-                description=description,
-                reference=reference,
-                license=license,
-                examples=examples,
-            )
-        except Exception as e:
-            raise e
-    return Dataset.create(ds_args)
+        elif file_path.endswith(".jsonl"):
+            with open(file_path, 'r', encoding='utf-8') as f:
+                raw_examples = [json.loads(line) for line in f]
+            examples = normalize_examples(raw_examples)
+
+        if not examples:
+            raise ValueError("No valid examples found in the dataset.")
+
+        ds_args = DatasetArguments(
+            id="",
+            name=name,
+            description=description,
+            reference=reference,
+            license=license,
+            examples=iter(examples),
+        )
+        return Dataset.create(ds_args)
+
+    except Exception as e:
+        raise RuntimeError(f"Failed to convert dataset: {e}")

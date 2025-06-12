@@ -165,7 +165,7 @@ def convert_dataset(args) -> None:
             - description (str): Description of the new dataset.
             - reference (str): Reference of the new dataset.
             - license (str): License of the new dataset.
-            - csv_file_path (str): Path to the existing dataset file.
+            - file_path (str): Path to .json, .jsonl, or .csv file.
 
     Returns:
         None
@@ -321,7 +321,7 @@ convert_dataset_args.add_argument(
     "license", type=str, help="License of the new dataset"
 )
 convert_dataset_args.add_argument(
-    "csv_file_path", type=str, help="Path to your existing dataset"
+    "file_path", type=str, help="Path to .json, .jsonl, or .csv file."
 )
 
 
