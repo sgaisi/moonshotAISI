@@ -1,5 +1,5 @@
 import cmd2
-from moonshot.api import transform_inspect_to_moonshot
+from moonshot.api import api_inspect_to_moonshot_results
 import os
 from rich.console import Console
 from pathlib import Path
@@ -23,7 +23,7 @@ def convert_inspect_result(args) -> None:
         with open(file_path, "r", encoding="utf-8") as f:
             inspect_json_str = f.read()
 
-        moonshot_json = transform_inspect_to_moonshot(inspect_json_str)
+        moonshot_json = api_inspect_to_moonshot_results(inspect_json_str)
 
         if moonshot_json:
             os.makedirs(default_dir, exist_ok=True)

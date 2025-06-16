@@ -15,6 +15,7 @@ from moonshot.api import (
 )
 
 
+
 class TestCollectionApiDataset:
     @pytest.fixture(autouse=True)
     def init(self):
@@ -212,10 +213,32 @@ class TestCollectionApiDataset:
                     "reference": "www.reference.com",
                     "license": "LICENSE",
                     "method": "csv",
-                    "file_path": "tests/unit-tests/common/samples/sample-dataset.csv"
+                    "file_path": "tests/unit-tests/common/samples/sample-dataset.csv",
                 },
-                "tests/unit-tests/src/data/datasets/test-csv-dataset.json"
-            )
+                "tests/unit-tests/src/data/datasets/test-csv-dataset.json",
+            ),
+            (
+                {
+                    "name": "Test JSON Dataset",
+                    "description": "Dataset from JSON",
+                    "reference": "www.reference.com",
+                    "license": "LICENSE",
+                    "method": "json",
+                    "file_path": "tests/unit-tests/common/samples/sample-dataset.json",
+                },
+                "tests/unit-tests/src/data/datasets/test-json-dataset.json",
+            ),
+            (
+                {
+                    "name": "Test JSONL Dataset",
+                    "description": "Dataset from JSONL",
+                    "reference": "www.reference.com",
+                    "license": "LICENSE",
+                    "method": "jsonl",
+                    "file_path": "tests/unit-tests/common/samples/sample-dataset.jsonl",
+                },
+                "tests/unit-tests/src/data/datasets/test-jsonl-dataset.json",
+            ),
         ],
     )
     def test_api_convert_dataset(self, dataset_details, expected_result):
@@ -231,16 +254,18 @@ class TestCollectionApiDataset:
             expected_result: The expected result from the api_convert_datasets call.
         """
         # Extract the common arguments
-        name = dataset_details.pop('name')
-        description = dataset_details.pop('description')
-        reference = dataset_details.pop('reference')
-        license = dataset_details.pop('license')
-        file_path= dataset_details.pop('file_path')
+        name = dataset_details.pop("name")
+        description = dataset_details.pop("description")
+        reference = dataset_details.pop("reference")
+        license = dataset_details.pop("license")
+        file_path = dataset_details.pop("file_path")
 
         # Call the api_convert_dataset function with unpacked arguments
         result = api_convert_dataset(name, description, reference, license, file_path)
         # Assert that the result matches the expected result
-        assert result == expected_result, f"The result '{result}' does not match the expected result '{expected_result}'."
+        assert (
+            result == expected_result
+        ), f"The result '{result}' does not match the expected result '{expected_result}'."
 
     @pytest.mark.parametrize(
         "dataset_details, expected_result",
@@ -248,17 +273,17 @@ class TestCollectionApiDataset:
             # Valid cases for api_download_dataset
             (
                 {
-                    'name': 'Test HF Dataset',
-                    'description': 'Dataset convert from hf',
-                    'reference': 'www.reference.com',
-                    'license': 'NORMAN LICENSE',
-                    'dataset_name': 'cais/mmlu',
-                    'dataset_config': 'college_biology',
-                    'split': 'dev',
-                    'input_col': ['question', 'choices'],
-                    'target_col': 'answer'
+                    "name": "Test HF Dataset",
+                    "description": "Dataset convert from hf",
+                    "reference": "www.reference.com",
+                    "license": "NORMAN LICENSE",
+                    "dataset_name": "cais/mmlu",
+                    "dataset_config": "college_biology",
+                    "split": "dev",
+                    "input_col": ["question", "choices"],
+                    "target_col": "answer",
                 },
-                "tests/unit-tests/src/data/datasets/test-hf-dataset.json"
+                "tests/unit-tests/src/data/datasets/test-hf-dataset.json",
             )
         ],
     )
@@ -275,12 +300,16 @@ class TestCollectionApiDataset:
             expected_result: The expected result from the api_download_dataset call.
         """
         # Extract the common arguments
-        name = dataset_details.pop('name')
-        description = dataset_details.pop('description')
-        reference = dataset_details.pop('reference')
-        license = dataset_details.pop('license')
+        name = dataset_details.pop("name")
+        description = dataset_details.pop("description")
+        reference = dataset_details.pop("reference")
+        license = dataset_details.pop("license")
 
         # Call the api_download_dataset function with unpacked arguments
-        result = api_download_dataset(name, description, reference, license, **dataset_details)
+        result = api_download_dataset(
+            name, description, reference, license, **dataset_details
+        )
         # Assert that the result matches the expected result
-        assert result == expected_result, f"The result '{result}' does not match the expected result '{expected_result}'."
+        assert (
+            result == expected_result
+        ), f"The result '{result}' does not match the expected result '{expected_result}'."

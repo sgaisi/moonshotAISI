@@ -4,7 +4,7 @@ from typing import Union
 from pydantic import validate_call
 
 @validate_call
-def transform_inspect_to_moonshot(inspect_json: str) -> Union[str, None]:
+def api_inspect_to_moonshot_results(inspect_json: str) -> Union[str, None]:
     """
     Transforms Inspect evaluation result JSON into Moonshot-compatible format.
 
