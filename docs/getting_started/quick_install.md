@@ -6,7 +6,7 @@ This project <span style="color:red;">strictly</span> requires Python <span styl
 
  | Software                                                                           | Version Requirement |
 | ---------------------------------------------------------------------------------- | ------------------- |
-| [Python](https://www.python.org/downloads/)                                        | v3.11               |
+| [Python](https://www.python.org/downloads/release/python-3111/)                                        | v3.11               |
 | [NodeJs](https://nodejs.org/en/download)                                           | v20.11.1 LTS or above               |
 | npm                                        | v10.8.0 or above               |
 | git                                        |                |
@@ -15,13 +15,16 @@ This project <span style="color:red;">strictly</span> requires Python <span styl
 Run the following command in a virtual environment of your choice:
 
 ```
-$ pip install "aiverify-moonshot[all]"
+$ git clone https://github.com/sgaisi/moonshotAISI.git
+$ cd moonshotAISI
 ```
 
-Once installed, Moonshot provides commands to download all the test assets required to start testing your AI system:
+Once installed, download all the dependencies and test assets required to start testing your AI system:
 
 ```
-$ python -m moonshot -i moonshot-data -i moonshot-ui
+$ python -m pip install --upgrade pip~=25.1
+$ pip install -r requirements.txt
+$ python -m moonshot -i moonshot-data-aisi -i moonshot-ui-aisi
 ```
 
 Run Moonshot UI with the following command:
@@ -32,8 +35,8 @@ $ python -m moonshot web
 
 Lastly, access Moonshot UI using a browser (`http://localhost:3000`).
 
-!!! warning
-    If you are operating on an x86 MacOS, you may encounter difficulties when attempting to install the dependency for moonshot-data. Please refer to this [FAQ](../faq.md#i-am-unable-to-install-pytorch) for a potential solution.
+> **Warning**<br>
+If you are operating on an x86 MacOS, you may encounter difficulties when attempting to install the dependency for moonshot-data. Please refer to this [FAQ](../faq.md#i-am-unable-to-install-pytorch) for a potential solution.
 
 ## Extra Resources
 

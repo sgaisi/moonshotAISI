@@ -9,7 +9,7 @@ To run Moonshot Web API:
 $ python -m moonshot web-api
 ```
 
-For instructions on setting up the Moonshot UI, please refer to the [Moonshot UI repository](https://github.com/aiverify-foundation/moonshot-ui).
+For instructions on setting up the Moonshot UI, please refer to the [Moonshot UI repository](https://github.com/sgaisi/moonshot-ui-aisi).
 
 ## Customising Moonshot Web API Configuration
 
@@ -63,4 +63,4 @@ The `config.yml` file contains several sections. Here's a brief overview of each
 |`log_file_max_size` | This is the maximum size (in bytes) that a log file can have before it gets rolled over. | `log_file_max_size: 5242880` |
 |`log_file_backup_count` | This is the number of backup log files to keep. | `log_file_backup_count: 3"` |
 
-For more example on how to structure your `config.yml` file, refer to the example provided [here](https://github.com/aiverify-foundation/moonshot/blob/main/examples/config.yml).
+For more example on how to structure your `config.yml` file, refer to the example provided [here](https://github.com/sgaisi/moonshotAISI/blob/main/examples/config.yml).

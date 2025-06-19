@@ -1,10 +1,10 @@
 Currently, the most straightforward way is to duplicate an existing connector module, and modify the codes. This feature is currently not available on the Web UI and CLI.
 
-All connectors inherit the super class [Connector](https://github.com/aiverify-foundation/moonshot/blob/main/moonshot/src/connectors/connector.py). We initalise this super class with certain variables that are common across various connectors (i.e. `token`, `max_concurrency`, etc). These variables come from another class called [ConnectorEndpoint](https://github.com/aiverify-foundation/moonshot/blob/main/moonshot/src/connectors_endpoints/connector_endpoint.py).
+All connectors inherit the super class [Connector](https://github.com/sgaisi/moonshotAISI/blob/main/moonshot/src/connectors/connector.py). We initalise this super class with certain variables that are common across various connectors (i.e. `token`, `max_concurrency`, etc). These variables come from another class called [ConnectorEndpoint](https://github.com/sgaisi/moonshotAISI/blob/main/moonshot/src/connectors_endpoints/connector_endpoint.py).
 
 ## Initialise Connector Class
 
-We will use a set of modified code from one of our connectors [openai-connector](https://github.com/aiverify-foundation/moonshot-data/blob/main/connectors/openai-connector.py) as an example:
+We will use a set of modified code from one of our connectors [openai-connector](https://github.com/sgaisi/moonshot-data-aisi/blob/main/connectors/openai-connector.py) as an example:
 
 
 ```
@@ -66,7 +66,7 @@ The `_process_response()` is an optional method that is included in all our conn
 
 ## List Your Newly Created Connector
 
-Once you have your connector created, move it to your own `moonshot-data/connectors` folder. The name of your connector will be your file name (i.e. the name of your connector will be `new-custom-connector` if your connector file name is `new-custom-connector.py`)
+Once you have your connector created, move it to your own `moonshot-data-aisi/connectors` folder. The name of your connector will be your file name (i.e. the name of your connector will be `new-custom-connector` if your connector file name is `new-custom-connector.py`)
 
 If you are using CLI, you should be able to see your connector when you list the connectors using the following command:
 

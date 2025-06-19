@@ -8,9 +8,9 @@ Workflows created in a non-main branch can only be run via CLI as follows:
 
 `gh workflow run <workflow-name> --ref <branch-name> -f <parameter-name>=<parameter-value>`
 
-For example, to run a workflow called License File Generation created in the ci-workflow-dev branch:
+For example, to run a workflow called Pre-Build Checks created in the ci-pre-build-flow branch:
 
-`gh workflow run 'License File Generation' --ref ci-workflow-dev -f repo=aiverify-foundation/moonshot -f branch=ci-workflow-dev`
+`gh workflow run 'Pre-Build Checks' --ref ci-pre-build-flow -f repo=sgaisi/moonshotAISI -f branch=ci-pre-build-flow`
 
 To run the workflow via CLI, it must appear in the workflow list when you
 run the following command:
@@ -24,5 +24,5 @@ the trigger for push from your workflow.
 
     on:  
         push:  
-            branches: [ "ci-workflow-dev" ]  
+            branches: [ "ci-pre-build-flow" ]  
 

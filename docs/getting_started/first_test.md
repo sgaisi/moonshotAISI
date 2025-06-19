@@ -17,8 +17,8 @@ python -m moonshot web
 
 Then, use your browser and navigate to `http://localhost:3000`
 
-!!! note
-    We will be testing a model from OpenAI in this guide. You will need to prepare two API tokens - one from OpenAI and one from TogetherAI
+> **Note**<br>
+We will be testing a model from OpenAI in this guide. You will need to prepare two API tokens - one from OpenAI and one from TogetherAI
 
 ## Run Benchmark Test
 
@@ -33,12 +33,10 @@ This will direct you to a wizard that will guide you through the testing process
 
 Once you have completed the selection, click on the arrow to proceed to the next step. In this step, you will see the total number of prompts in this set of tests. Click on the arrow again to advance to the next step.
 
-!!! warning
-    <b>Important information before running your benchmark:</b>
-
-    Certain benchmarks may require metrics that connect to a particular model (i.e. MLCommons cookbooks and recipes like [mlc-cae](https://github.com/aiverify-foundation/moonshot-data/blob/main/recipes/mlc-cae.json) use the metric [llamaguardannotator](https://github.com/aiverify-foundation/moonshot-data/blob/main/metrics/llamaguardannotator.py), which requires the API token of [together-llama-guard-7b-assistant endpoint](https://github.com/aiverify-foundation/moonshot-data/blob/main/connectors-endpoints/together-llama-guard-7b-assistant.json)).
-
-    Refer to this [list for the requirements](../faq.md#requirements).
+> **Warning**<br>
+<b>Important information before running your benchmark:</b><br><br>
+Certain benchmarks may require metrics that connect to a particular model (i.e. MLCommons cookbooks and recipes like [mlc-cae](https://github.com/sgaisi/moonshot-data-aisi/blob/main/recipes/mlc-cae.json) use the metric [llamaguardannotator](https://github.com/sgaisi/moonshot-data-aisi/blob/main/metrics/llamaguardannotator.py), which requires the API token of [together-llama-guard-3-8b-assistant endpoint](https://github.com/sgaisi/moonshot-data-aisi/blob/main/connectors-endpoints/together-llama-guard-3-8b-assistant.json)).<br><br>
+Refer to this [list for the requirements](../faq.md#requirements).
 
 ![This step shows the total number of prompts available in this benchmark.](getting_started/3.png)
 
@@ -46,10 +44,10 @@ Connect to your AI system. Click "Edit" for one of the OpenAI models, such as Op
 
 ![alt text](getting_started/4.png)
 
-Enter your API token on this screen, then click "Save". Repeat this step for "Together Llama Guard 7B Assistant”. Enter the API token that you obtained from TogetherAI to set up the "Together Llama Guard 7B Assistant" endpoint.
+Enter your API token on this screen, then click "Save". Repeat this step for "Together Llama Guard 3 8B Assistant”. Enter the API token that you obtained from TogetherAI to set up the "Together Llama Guard 3 8B Assistant" endpoint.
 
-!!! note
-    Some cookbooks use another LLM to evaluate the response. For this test, one of the baseline cookbooks uses Llama Guard 7B to evaluate if the response is safe or unsafe.
+> **Note**<br>
+Some cookbooks use another LLM to evaluate the response. For this test, one of the baseline cookbooks uses Llama Guard 3 8B to evaluate if the response is safe or unsafe.
 
 ![alt text](getting_started/5.png)
 
@@ -63,8 +61,8 @@ The progress bar will be shown in the screen.
 
 ![alt text](getting_started/7.png)
 
-!!! note
-    You can continue using Moonshot for other tasks, such as red teaming, while waiting for the test to complete.
+> **Note**<br>
+You can continue using Moonshot for other tasks, such as red teaming, while waiting for the test to complete.
 
 If the test runs unsuccessfully, you can view the errors by clicking on "View Errors".
 
@@ -84,8 +82,8 @@ To initiate red teaming, click on the icon in the sidebar or select "Start Red T
 
 ![alt text](getting_started/11.png)
 
-!!! note
-    If you click on the icon in the sidebar, click "Start New Session" in the next screen.
+> **Note**<br>
+If you click on the icon in the sidebar, click "Start New Session" in the next screen.
 
 Select one or more endpoints to red team on this screen. Click the arrow to proceed to the next screen.
 
@@ -95,12 +93,10 @@ In this screen, you have the option to select one of the attack modules to autom
 
 ![alt text](getting_started/13.png)
 
-!!! warning
-    <b>Important information before running red teaming:</b>
-
-    Certain attack modules may require connection to certain model endpoints. (i.e. [Violent Durian](https://github.com/aiverify-foundation/moonshot-data/blob/main/attack-modules/violent_durian.py) requires the endpoint [openai-gpt4](https://github.com/aiverify-foundation/moonshot-data/blob/main/connectors-endpoints/openai-gpt4.json) and you will need an API token to connect to this endpoint.
-
-    Refer to this [list for the requirements](../faq.md#requirements).
+> **Warning**<br>
+<b>Important information before running red teaming:</b><br><br>
+Certain attack modules may require connection to certain model endpoints. (i.e. [Violent Durian](https://github.com/sgaisi/moonshot-data-aisi/blob/main/attack-modules/violent_durian.py) requires the endpoint [openai-gpt4](https://github.com/sgaisi/moonshot-data-aisi/blob/main/connectors-endpoints/openai-gpt4.json) and you will need an API token to connect to this endpoint.)<br><br>
+Refer to this [list for the requirements](../faq.md#requirements).
 
 Enter a name and type a description in this screen, then click "Start".
 
