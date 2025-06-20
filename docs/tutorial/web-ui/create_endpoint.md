@@ -14,9 +14,8 @@ A form will appear. Enter the details. If your AI models require more details, c
 
 ![select more config](./res/create_endpoint_3.png)
 
-!!! note
-
-    You can add in additional parameters that are required by your model. An example is *top_k*.
+> **Note**<br>
+You can add in additional parameters that are required by your model. An example is *top_k*.
 
 Click "OK" to confirm your details.
 

@@ -1,23 +1,23 @@
-# Moonshot Contribution Guide
+# MoonshotAISI Contribution Guide
 
 ## Welcome
 
-Welcome to Moonshot's Contributor Guide!
+Welcome to MoonshotAISI's Contributor Guide!
 
-We always welcome community contributions to Moonshot, and the Moonshot team appreciates any help the community can give to make Moonshot better. This guide will help you understand how to contribute to the test assets in Moonshot.
+We always welcome community contributions to MoonshotAISI, and the MoonshotAISI team appreciates any help the community can give to make MoonshotAISI better. This guide will help you understand how to contribute to the test assets in MoonshotAISI.
 
-* Submit your changes directly with a [pull request](https://github.com/aiverify-foundation/moonshot-data/pulls)
-* Log a bug or make a feature request with an [issue](https://github.com/aiverify-foundation/moonshot/issues)
+* Submit your changes directly with a [pull request](https://github.com/sgaisi/moonshot-data-aisi/pulls)
+* Log a bug or make a feature request with an [issue](https://github.com/sgaisi/moonshotAISI/issues)
 
 It is recommended that you follow these steps in order:
 
-* [Prerequisites](#prerequisites) - what you need to do first before you can start contributing to Moonshot
+* [Prerequisites](#prerequisites) - what you need to do first before you can start contributing to MoonshotAISI
 * [Your First Contribution](#your-first-contribution) - things you need to do to make your first contribution
 * [Contributing by Pull Requests](#contributing-by-pull-requests-prs) - contribute to our repository
 
 ## Prerequisites
 
-Before contributing to Moonshot's test assets, you should first ensure that you have these ready:
+Before contributing to MoonshotAISI's test assets, you should first ensure that you have these ready:
 
 ### Create a Github Account
 
@@ -25,27 +25,27 @@ You will need to [sign up](https://github.com/signup) for a Github user account.
 
 ### Setting up your development environment
 
-You will need to install both `moonshot` and `moonshot-data` to test your test assets.
+You will need to install both `moonshotAISI` and `moonshot-data-aisi` to test your test assets.
 
 Visit [this page](./getting_started/quick_install.md) to learn how to install the necessary dependencies.
 
 ### Contribution Scope
 
-Currently, Moonshot is only accepting contributions for `moonshot-data`. This includes `connectors`, `metrics`, `benchmarks` (in the form of `dataset`, `recipe` and `cookbook`).
+Currently, MoonshotAISI is only accepting contributions for `moonshot-data-aisi`. This includes `connectors`, `metrics`, `benchmarks` (in the form of `dataset`, `recipe` and `cookbook`).
 
 ## Your First Contribution
 
 ### Adding a new connector
 
-You can find a list of [available connectors here](https://github.com/aiverify-foundation/moonshot-data/tree/main/connectors).
+You can find a list of [available connectors here](https://github.com/sgaisi/moonshot-data-aisi/tree/main/connectors).
 
 For more details, you may refer to the HOW-TO guide on [how to add a new connector](./tutorial/contributor/create_connector.md).
 
 ### Adding a new metric
 
-You can find a list of [available metrics here](https://github.com/aiverify-foundation/moonshot-data/tree/main/metrics).
+You can find a list of [available metrics here](https://github.com/sgaisi/moonshot-data-aisi/tree/main/metrics).
 
-The best way to start developing a new metric is to learn by an example. We have included a sample metric, [samplemetric.py](https://github.com/aiverify-foundation/moonshot-data/blob/main/metrics/samplemetric.py).
+The best way to start developing a new metric is to learn by an example. We have included a sample metric, [samplemetric.py](https://github.com/sgaisi/moonshot-data-aisi/blob/main/metrics/samplemetric.py).
 
 #### Modify Your Metric Metadata
 
@@ -95,9 +95,9 @@ The `grading_criteria` will be used by the grading scale in the recipe to assess
 
 ### Adding a new dataset.
 
-You can find a list of [available datasets here](https://github.com/aiverify-foundation/moonshot-data/tree/main/datasets).
+You can find a list of [available datasets here](https://github.com/sgaisi/moonshot-data-aisi/tree/main/datasets).
 
-To create a Moonshot-compatible dataset, you can convert your raw dataset into this format:
+To create a MoonshotAISI-compatible dataset, you can convert your raw dataset into this format:
 
 ```
 {
@@ -120,11 +120,11 @@ To create a Moonshot-compatible dataset, you can convert your raw dataset into t
 }
 ```
 
-To run your dataset, you need to create a [recipe](#adding-a-new-recipe) so that Moonshot knows how it can be evaluated. The filename of the dataset will serve as the unique identifier in the recipe. 
+To run your dataset, you need to create a [recipe](#adding-a-new-recipe) so that MoonshotAISI knows how it can be evaluated. The filename of the dataset will serve as the unique identifier in the recipe. 
 
 ### Adding a new recipe
 
-You can find a list of [available recipes here](https://github.com/aiverify-foundation/moonshot-data/tree/main/recipes).
+You can find a list of [available recipes here](https://github.com/sgaisi/moonshot-data-aisi/tree/main/recipes).
 
 To create a recipe, you can copy one of the recipe files and edit the following elements:
 
@@ -133,10 +133,10 @@ To create a recipe, you can copy one of the recipe files and edit the following 
 3. `description`: This describes what the recipe tests. We recommend also including what constitutes a better score and what that implies..
 4. `tags`: This is a list of tags, which can help the user to find your recipe. We suggest to insert some relevant keywords related to domain and nature of the test.
 5. `categories`: This helps to group the recipe. We suggest using `Trust & Safety`, `Capability` and `Quality`.
-6. `datasets`: This contains a list of dataset identifiers used in this recipe. This dataset must be included in [this folder](https://github.com/aiverify-foundation/moonshot-data/tree/main/datasets).
-7. `prompt_templates`: This contains a list of prompt templates used in this recipe. This prompt template must be found in [this folder](https://github.com/aiverify-foundation/moonshot-data/tree/main/prompt-templates).
-8. `attack_modules`: A list of attack modules that is used in this recipe. The attack modules must be available in [this folder](https://github.com/aiverify-foundation/moonshot-data/tree/main/attack-modules).
-9. `metrics`: This contains a list of metric identifiers used in this recipe. This metric must be included in [this folder](https://github.com/aiverify-foundation/moonshot-data/tree/main/metrics).
+6. `datasets`: This contains a list of dataset identifiers used in this recipe. This dataset must be included in [this folder](https://github.com/sgaisi/moonshot-data-aisi/tree/main/datasets).
+7. `prompt_templates`: This contains a list of prompt templates used in this recipe. This prompt template must be found in [this folder](https://github.com/sgaisi/moonshot-data-aisi/tree/main/prompt-templates).
+8. `attack_modules`: A list of attack modules that is used in this recipe. The attack modules must be available in [this folder](https://github.com/sgaisi/moonshot-data-aisi/tree/main/attack-modules).
+9. `metrics`: This contains a list of metric identifiers used in this recipe. This metric must be included in [this folder](https://github.com/sgaisi/moonshot-data-aisi/tree/main/metrics).
 10. `grading_scale`: This grading scale helps to determine the outcome of the test. Leaving this empty will result in '-' as its grade in the report.
 
 Here's an example recipe:
@@ -179,14 +179,14 @@ Here's an example recipe:
 
 ### Adding a new cookbook
 
-You can find a list of [available cookbooks here](https://github.com/aiverify-foundation/moonshot-data/tree/main/cookbooks).
+You can find a list of [available cookbooks here](https://github.com/sgaisi/moonshot-data-aisi/tree/main/cookbooks).
 
 To create a cookbook, you can copy one of the cookbook files and edit the following elements:
 
 1. `id`: This is an unique identifier that will be used by the user. This should be the file name.
 2. `name`: This is the name of the recipe, which will be displayed when a recipe is listed.
 3. `description`: This describes what the recipe test.
-4. `recipes`: This contains a list of recipe identifiers that this cookbook will execute. These recipes must be found in [this folder](https://github.com/aiverify-foundation/moonshot-data/tree/main/recipes).
+4. `recipes`: This contains a list of recipe identifiers that this cookbook will execute. These recipes must be found in [this folder](https://github.com/sgaisi/moonshot-data-aisi/tree/main/recipes).
 
 Here's an example cookbook:
 
@@ -208,8 +208,8 @@ Any contributions are greatly appreciated.
 
 Please fork the repo and create a pull request. You can also open an issue with the tag `"enhancement"`. Do give the project a star too!
 
-1. Fork the `moonshot-data` Project
-2. Install `moonshot` (to run your test assets)
+1. Fork the `moonshot-data-aisi` Project
+2. Install `moonshotAISI` (to run your test assets)
 3. Create your branch (`git checkout -b connector/X` or `git checkout -b metric/X` or `git checkout -b cookbook/X` or `git checkout -b recipe/X` or ... )
 4. Push to the branch (`git push origin metric/X`)
 5. Open a Pull Request

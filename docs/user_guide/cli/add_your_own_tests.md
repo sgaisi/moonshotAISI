@@ -18,9 +18,9 @@ python -m moonshot cli interactive
 
 ## Create a New Dataset
 
-You can convert your raw dataset into Moonshot-compatible dataset using the following schema. Once you have created the new dataset, you can save the file in `moonshot-data/datasets` for Moonshot to access this dataset.
+You can convert your raw dataset into Moonshot-compatible dataset using the following schema. Once you have created the new dataset, you can save the file in `moonshot-data-aisi/datasets` for Moonshot to access this dataset.
 
-Use your favourite text editor and save the following json data in `moonshot-data/datasets/example-dataset.json`.
+Use your favourite text editor and save the following json data in `moonshot-data-aisi/datasets/example-dataset.json`.
 
 ```python
 {
@@ -65,12 +65,12 @@ The name of the dataset is the unique identifier for the dataset. This will be u
 
 !!! note
 
-    You can also refer to [this Jupyter notebook example](https://github.com/aiverify-foundation/moonshot/blob/main/examples/jupyter-notebook/Tutorial%202%20-%20Basic%20Workflow%20-%20Add%20your%20own%20test.ipynb) for more details how a dataset can be created.
+    You can also refer to [this Jupyter notebook example](https://github.com/sgaisi/moonshotAISI/blob/main/examples/jupyter-notebook/Tutorial%202%20-%20Basic%20Workflow%20-%20Add%20your%20own%20test.ipynb) for more details how a dataset can be created.
 
 
 ## Create a New Recipe
 
-To run the new Moonshot-compatible dataset that you have created in `moonshot-data/datasets`, we must first create a new recipe. 
+To run the new Moonshot-compatible dataset that you have created in `moonshot-data-aisi/datasets`, we must first create a new recipe. 
 
 !!! note
 

@@ -116,36 +116,63 @@ def download_nltk_resources() -> None:
             raise
 
 
-def moonshot_data_installation() -> None:
-    # Code for moonshot-data installation
-    logger.info("Installing Moonshot Data from GitHub")
-    repo = "https://github.com/aiverify-foundation/moonshot-data.git"
-    folder_name = repo.split("/")[-1].replace(".git", "")
+def download_spacy_model() -> None:
+    """
+    Downloads the en_core_web_lg model using the spacy module (for entity processor module).
+    """
+    subprocess.run(["python", "-m", "spacy", "download", "en_core_web_lg"])
 
-    # Check if the directory already exists
+
+def moonshot_data_installation(unattended: bool, overwrite: bool) -> None:
+    """
+    Install Moonshot Data from GitHub.
+
+    This function clones the Moonshot Data repository from GitHub, installs its requirements,
+    and sets up the necessary environment. If the target directory already exists, it handles
+    the situation based on the 'unattended' and 'overwrite' flags.
+
+    Args:
+        unattended (bool): If True, the function will not prompt the user for input.
+        overwrite (bool): If True, the existing directory will be removed before installation.
+    """
+    logger.info("Installing Moonshot Data from GitHub")
+    repo = "https://github.com/sgaisi/moonshot-data-aisi.git"
+    folder_name = repo.split("/")[-1].replace(".git", "")
+    do_install = True
+
     if os.path.exists(folder_name):
-        logger.warning(f"Directory {folder_name} already exists.")
-        user_input = (
-            input(
-                f"Directory {folder_name} already exists. Do you want to remove it and reinstall? (Y/n): "
-            )
-            .strip()
-            .lower()
-        )
-        if user_input == "y":
-            logger.info(f"Removing directory {folder_name}.")
-            # Remove the existing directory
+        if overwrite:
+            logger.info(f"Removing directory {folder_name} due to --overwrite flag.")
             shutil.rmtree(folder_name)
         else:
-            logger.info("Exiting function without removing the directory.")
-            return
+            logger.warning(f"Directory {folder_name} already exists.")
+            if not unattended:
+                user_input = (
+                    input(
+                        f"Directory {folder_name} already exists. Do you want to remove it and reinstall? (Y/n): "
+                    )
+                    .strip()
+                    .lower()
+                )
+                if user_input == "y":
+                    logger.info(f"Removing directory {folder_name}.")
+                    shutil.rmtree(folder_name)
+                else:
+                    logger.info("Skipping removal of directory.")
+                    do_install = False
+            else:
+                do_install = False
+                logger.info(
+                    "Unattended mode detected. To reinstall, please use the --overwrite flag."
+                )
 
-    logger.info(f"Cloning {repo}")
-    # Clone the repository
-    run_subprocess(["git", "clone", repo], check=True)
+    if do_install:
+        logger.info(f"Cloning {repo}")
+        # Clone the repository
+        run_subprocess(["git", "clone", repo], check=True)
 
-    # Create .env to point to installed folder
-    ms_lib_env_file(folder_name)
+        # Create .env to point to installed folder
+        ms_lib_env_file(folder_name)
 
     # Change directory to the folder
     os.chdir(folder_name)
@@ -155,6 +182,7 @@ def moonshot_data_installation() -> None:
     if os.path.exists("requirements.txt"):
         run_subprocess(["pip", "install", "-r", "requirements.txt"], check=True)
         download_nltk_resources()
+        download_spacy_model()
 
     # Change back to the base directory
     os.chdir("..")
@@ -176,36 +204,52 @@ def check_node() -> bool:
         return False
 
 
-def moonshot_ui_installation() -> None:
+def moonshot_ui_installation(unattended: bool, overwrite: bool) -> None:
+    """
+    Install Moonshot UI from GitHub.
+    """
     if not check_node():
         logger.error("Node.js is not installed. Please install Node.js to proceed.")
         return
 
-    # Code for moonshot-ui installation
-    repo = "https://github.com/aiverify-foundation/moonshot-ui.git"
+    logger.info("Installing Moonshot UI from GitHub")
+    repo = "https://github.com/sgaisi/moonshot-ui-aisi.git"
     folder_name = repo.split("/")[-1].replace(".git", "")
+    do_install = True
 
-    # Check if the directory already exists
     if os.path.exists(folder_name):
-        logger.warning(f"Directory {folder_name} already exists.")
-        user_input = (
-            input(
-                f"Directory {folder_name} already exists. Do you want to remove it and reinstall? (Y/n): "
-            )
-            .strip()
-            .lower()
-        )
-        if user_input == "y":
-            logger.info(f"Removing directory {folder_name}.")
-            # Remove the existing directory
+        if overwrite:
+            logger.info(f"Removing directory {folder_name} due to --overwrite flag.")
             shutil.rmtree(folder_name)
         else:
-            logger.info("Exiting function without removing the directory.")
-            return
+            logger.warning(f"Directory {folder_name} already exists.")
+            if not unattended:
+                user_input = (
+                    input(
+                        f"Directory {folder_name} already exists. Do you want to remove it and reinstall? (Y/n): "
+                    )
+                    .strip()
+                    .lower()
+                )
+                if user_input == "y":
+                    logger.info(f"Removing directory {folder_name}.")
+                    shutil.rmtree(folder_name)
+                else:
+                    logger.info("Skipping removal of directory.")
+                    do_install = False
+            else:
+                do_install = False
+                logger.info(
+                    "Unattended mode detected. To reinstall, please use the --overwrite flag."
+                )
 
-    logger.info(f"Cloning {repo}")
-    # Clone the repository
-    run_subprocess(["git", "clone", repo], check=True)
+    if do_install:
+        logger.info(f"Cloning {repo}")
+        # Clone the repository
+        run_subprocess(["git", "clone", repo], check=True)
+
+        # Create .env for UI
+        ms_ui_env_file(folder_name)
 
     # Change directory to the folder
     os.chdir(folder_name)
@@ -219,20 +263,17 @@ def moonshot_ui_installation() -> None:
     # Change back to the base directory
     os.chdir("..")
 
-    # Create .env for ui
-    ms_ui_env_file(folder_name)
-
 
 def run_moonshot_ui() -> None:
     """
     To start a thread to run the Moonshot UI
     """
     base_directory = os.getcwd()
-    ui_dir = os.path.join(base_directory, "moonshot-ui")
+    ui_dir = os.path.join(base_directory, "moonshot-ui-aisi")
 
     if not os.path.exists(ui_dir):
         logger.error(
-            "moonshot-ui does not exist. Please run with '-i moonshot-ui' to install moonshot-ui first."
+            "moonshot-ui-aisi does not exist. Please run with '-i moonshot-ui-aisi' to install moonshot-ui-aisi first."
         )
         sys.exit(1)
     # ms_ui_env_file(ui_dev_dir)
@@ -255,22 +296,34 @@ def main() -> None:
         "-i",
         "--install",
         action="append",
-        choices=["moonshot-data", "moonshot-ui"],
+        choices=["moonshot-data-aisi", "moonshot-ui-aisi"],
         help="Modules to install",
         default=[],
     )
     parser.add_argument(
         "-e", "--env", type=str, help="Path to the .env file", default=".env"
     )
+    parser.add_argument(
+        "-u",
+        "--unattended",
+        action="store_true",
+        help="Perform action without user interaction",
+    )
+    parser.add_argument(
+        "-o",
+        "--overwrite",
+        action="store_true",
+        help="Force delete and reinstall the specified module",
+    )
 
     args = parser.parse_args()
 
     # Handle installations based on the -i include arguments
-    if "moonshot-data" in args.install:
-        moonshot_data_installation()
+    if "moonshot-data-aisi" in args.install:
+        moonshot_data_installation(args.unattended, args.overwrite)
 
-    if "moonshot-ui" in args.install:
-        moonshot_ui_installation()
+    if "moonshot-ui-aisi" in args.install:
+        moonshot_ui_installation(args.unattended, args.overwrite)
 
     # If mode is not specified, skip running any modes
     if args.mode is None:

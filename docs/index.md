@@ -1,10 +1,7 @@
 #
 
-![moonshot logo](./res/aiverify-moonshot-logo.png)
+# Welcome to MoonshotAISI's Documentation
 
-# Welcome to Moonshot's Documentation
-
-**Moonshot** is a tool designed for AI developers and security experts to test and evaluate AI systems. Moonshot seamlessly integrates into your model development workflow, enabling repeatable tests through interactive use via command line interface (CLI), Python notebooks, or a Web UI.
 
 Below are some useful links to help you get started with Moonshot.
 

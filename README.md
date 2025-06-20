@@ -1,8 +1,15 @@
+> [!IMPORTANT]
+>
+> For Joint Testing 3, please use the [jointTesting branch](https://github.com/sgaisi/moonshotAISI/tree/jointTesting).
+>
+
 <div align="center">
+
+
 
 ![Moonshot Logo](https://github.com/aiverify-foundation/moonshot/raw/main/misc/aiverify-moonshot-logo.png)
 
-**Version 0.4.6**
+**Version 0.6.2**
 
 A simple and modular tool to evaluate any LLM application.
 
@@ -55,7 +62,7 @@ python -m moonshot -i moonshot-data -i moonshot-ui
 ```
 Check out our [Installation Guide](https://aiverify-foundation.github.io/moonshot/getting_started/quick_install/) for a more details.
 
-If you are having installation issues, see the [Troubleshooting Guide](https://aiverify-foundation.github.io/moonshot/common_issues/).
+If you are having installation issues, see the [Troubleshooting Guide](https://aiverify-foundation.github.io/moonshot/faq/).
 <details>
 <summary><b>Other installation options</b></summary>
 Here's a summary of other installation commands available:
