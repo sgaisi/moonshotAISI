@@ -85,7 +85,7 @@ jobs:
     - name: Setup Moonshot Data
       run: |
         source venv/bin/activate
-        cd moonshot-data
+        cd moonshot-data-aisi
         pip install -r requirements.txt
     - name: Checkout Moonshot UI (Pull Request Review)
       if: github.event_name == 'pull_request'
@@ -112,7 +112,7 @@ jobs:
         
     - name: Setup Moonshot UI
       run: |
-        cd moonshot-ui
+        cd moonshot-ui-aisi
         npm install
         npm run build
         cd ../
@@ -133,7 +133,7 @@ jobs:
         MOONSHOT_PORT_NUMBER: ${{ secrets.MOONSHOT_PORT_NUMBER }}
       run: |
          source venv/bin/activate
-         cd moonshot-smoke-testing
+         cd moonshot-smoke-testing-aisi
          npm ci
          npx playwright install
          npx playwright install-deps
