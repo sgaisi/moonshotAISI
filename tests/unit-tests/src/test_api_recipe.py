@@ -3,6 +3,7 @@ import shutil
 
 import pytest
 from pydantic import ValidationError
+from moonshot.src.storage.storage import Storage
 
 from moonshot.api import (
     api_create_recipe,
@@ -27,6 +28,7 @@ class TestCollectionApiRecipe:
                 "RECIPES": "tests/unit-tests/src/data/recipes/",
                 "DATASETS": "tests/unit-tests/src/data/datasets/",
                 "IO_MODULES": "tests/unit-tests/src/data/io-modules/",
+                "TOOLS": "tests/unit-tests/src/data/tools",
             }
         )
 
@@ -34,6 +36,14 @@ class TestCollectionApiRecipe:
         shutil.copyfile(
             "tests/unit-tests/common/samples/arc.json",
             "tests/unit-tests/src/data/recipes/arc.json",
+        )
+        shutil.copyfile(
+            "tests/unit-tests/common/samples/tool-recipe.json",
+            "tests/unit-tests/src/data/recipes/tool-recipe.json",
+        )
+        shutil.copyfile(
+            "tests/unit-tests/common/samples/tools-temp.py",
+            "tests/unit-tests/src/data/tools/tools-temp.py",
         )
         shutil.copyfile(
             "tests/unit-tests/common/samples/arc-easy.json",
@@ -68,6 +78,8 @@ class TestCollectionApiRecipe:
             "tests/unit-tests/src/data/prompt-templates/mcq-template.json",
             "tests/unit-tests/src/data/prompt-templates/analogical-similarity.json",
             "tests/unit-tests/src/data/metrics/exactstrmatch.py",
+            "tests/unit-tests/src/data/recipes/tool-recipe.json",
+            "tests/unit-tests/src/data/tools/tools-temp.py",
         ]
         for recipe_path in recipe_paths:
             if os.path.exists(recipe_path):
@@ -82,6 +94,20 @@ class TestCollectionApiRecipe:
             # Valid case
             (
                 {
+                    "name": "my-valid-recipe",
+                    "description": "My new Recipe!",
+                    "tags": ["food"],
+                    "categories": ["fairness"],
+                    "datasets": ["arc-easy"],
+                    "prompt_templates": ["analogical-similarity"],
+                    "metrics": ["exactstrmatch"],
+                    "grading_scale": {},
+                    "tools": ["tools-temp"],
+                },
+                {"expected_output": True, "expected_id": "my-valid-recipe"},
+            ),
+            (
+                {
                     "name": "my-new-recipe",
                     "description": "My new Recipe!",
                     "tags": ["food"],
@@ -92,6 +118,20 @@ class TestCollectionApiRecipe:
                     "grading_scale": {},
                 },
                 {"expected_output": True, "expected_id": "my-new-recipe"},
+            ),
+            (
+                {
+                    "name": "missing-tool-recipe",
+                    "description": "Recipe with missing tool",
+                    "tags": ["tag"],
+                    "categories": ["cat"],
+                    "datasets": ["arc-easy"],
+                    "prompt_templates": ["analogical-similarity"],
+                    "metrics": ["exactstrmatch"],
+                    "grading_scale": {"PASS": [0, 49], "FAIL": [50, 100]},
+                    "tools": ["missing_tool"],
+                },
+                {"expected_output": RuntimeError},
             ),
             (
                 {
@@ -768,9 +808,20 @@ class TestCollectionApiRecipe:
         - Invalid cases with improper input arguments that should raise specific exceptions with appropriate error messages.
         """
         if expected_dict["expected_output"]:
-            # Test valid cases where recipe creation should succeed.
-            assert (
-                api_create_recipe(
+            if "tools" in input_args:
+                result = api_create_recipe(
+                    input_args["name"],
+                    input_args["description"],
+                    input_args["tags"],
+                    input_args["categories"],
+                    input_args["datasets"],
+                    input_args["prompt_templates"],
+                    input_args["metrics"],
+                    input_args["grading_scale"],
+                    input_args["tools"],
+                )
+            else:
+                result = api_create_recipe(
                     input_args["name"],
                     input_args["description"],
                     input_args["tags"],
@@ -780,36 +831,61 @@ class TestCollectionApiRecipe:
                     input_args["metrics"],
                     input_args["grading_scale"],
                 )
-                == expected_dict["expected_id"]
-            )
+            assert result == expected_dict["expected_id"]
+
         else:
-            # Test invalid cases where recipe creation should fail and raise an exception.
             if expected_dict["expected_exception"] == "RuntimeError":
                 with pytest.raises(RuntimeError) as e:
-                    api_create_recipe(
-                        input_args["name"],
-                        input_args["description"],
-                        input_args["tags"],
-                        input_args["categories"],
-                        input_args["datasets"],
-                        input_args["prompt_templates"],
-                        input_args["metrics"],
-                        input_args["grading_scale"],
-                    )
+                    if "tools" in input_args:
+                        api_create_recipe(
+                            input_args["name"],
+                            input_args["description"],
+                            input_args["tags"],
+                            input_args["categories"],
+                            input_args["datasets"],
+                            input_args["prompt_templates"],
+                            input_args["metrics"],
+                            input_args["grading_scale"],
+                            input_args["tools"],
+                        )
+                    else:
+                        api_create_recipe(
+                            input_args["name"],
+                            input_args["description"],
+                            input_args["tags"],
+                            input_args["categories"],
+                            input_args["datasets"],
+                            input_args["prompt_templates"],
+                            input_args["metrics"],
+                            input_args["grading_scale"],
+                        )
                 assert e.value.args[0] == expected_dict["expected_error_message"]
 
             elif expected_dict["expected_exception"] == "ValidationError":
                 with pytest.raises(ValidationError) as e:
-                    api_create_recipe(
-                        input_args["name"],
-                        input_args["description"],
-                        input_args["tags"],
-                        input_args["categories"],
-                        input_args["datasets"],
-                        input_args["prompt_templates"],
-                        input_args["metrics"],
-                        input_args["grading_scale"],
-                    )
+                    if "tools" in input_args:
+                        api_create_recipe(
+                            input_args["name"],
+                            input_args["description"],
+                            input_args["tags"],
+                            input_args["categories"],
+                            input_args["datasets"],
+                            input_args["prompt_templates"],
+                            input_args["metrics"],
+                            input_args["grading_scale"],
+                            input_args["tools"],
+                        )
+                    else:
+                        api_create_recipe(
+                            input_args["name"],
+                            input_args["description"],
+                            input_args["tags"],
+                            input_args["categories"],
+                            input_args["datasets"],
+                            input_args["prompt_templates"],
+                            input_args["metrics"],
+                            input_args["grading_scale"],
+                        )
                 assert len(e.value.errors()) == 1
                 assert (
                     expected_dict["expected_error_message"]
@@ -817,7 +893,6 @@ class TestCollectionApiRecipe:
                 )
 
             else:
-                # If an unexpected exception is specified, fail the test.
                 assert False
 
     # ------------------------------------------------------------------------------
@@ -853,11 +928,43 @@ class TestCollectionApiRecipe:
                             "num_of_metrics": 1,
                             "num_of_datasets_prompts": {"arc-easy": 1},
                         },
-                        "tools": []
+                        "tools": [],
+                    }
+                },
+            ),
+            (
+                "my-valid-recipe",
+                {
+                    "expected_output": {
+                        "id": "my-valid-recipe",
+                        "name": "my-valid-recipe",
+                        "description": "My new Recipe!",
+                        "tags": ["food"],
+                        "categories": ["fairness"],
+                        "datasets": ["arc-easy"],
+                        "prompt_templates": ["analogical-similarity"],
+                        "metrics": ["exactstrmatch"],
+                        "grading_scale": {},
+                        "tools": ["tools-temp"],
+                        "stats": {
+                            "num_of_tags": 1,
+                            "num_of_datasets": 1,
+                            "num_of_prompt_templates": 1,
+                            "num_of_metrics": 1,
+                            "num_of_datasets_prompts": {"arc-easy": 1},
+                        },
                     }
                 },
             ),
             # Invalid cases
+            (
+                "missing-tool-recipe",
+                {
+                    "expected_output": False,
+                    "expected_error_message": "[Recipe] Tools missing_tool does not exist.",
+                    "expected_exception": "RuntimeError",
+                },
+            ),
             (
                 "vanilla-cake",
                 {
@@ -985,7 +1092,7 @@ class TestCollectionApiRecipe:
                                 "num_of_metrics": 1,
                                 "num_of_datasets_prompts": {"arc-easy": 1},
                             },
-                            "tools": []
+                            "tools": [],
                         }
                     ]
                 },
@@ -1138,6 +1245,13 @@ class TestCollectionApiRecipe:
                 "arc",
                 {
                     "name": "Delicious Chocolate Cake",
+                },
+                {"expected_output": True},
+            ),
+            (
+                "my-valid-recipe",
+                {
+                    "name": "Delicious Recipe with Tools",
                 },
                 {"expected_output": True},
             ),
@@ -1331,6 +1445,12 @@ class TestCollectionApiRecipe:
         [
             # Valid case
             ("arc", {"expected_output": True}),
+            (
+                "my-valid-recipe",
+                {
+                    "expected_output": True,
+                },
+            ),
             # Invalid cases
             (
                 "apple-pie",
