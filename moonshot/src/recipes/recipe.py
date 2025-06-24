@@ -133,10 +133,6 @@ class Recipe:
             recipe_details = Recipe._read_recipe(rec_id, {})
             if not recipe_details:
                 raise RuntimeError(f"Recipe with ID '{rec_id}' does not exist.")
-            tools = recipe_details.get("tools", [])
-            Recipe.check_file_exists(EnvVariables.TOOLS.name, tools, "Tools", "py")
-
-            # Recipe.check_file_exists(EnvVariables.TOOLS.name, recipe_details["tools"], "Tools", "py")
             
             return RecipeArguments(**recipe_details)
 

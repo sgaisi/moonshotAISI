@@ -12,8 +12,6 @@
     "metrics": [
         "exactstrmatch"
     ],
-    "tools": [
-        "tools-temp"
-    ],
+    "tools": [],
     "grading_scale": {}
 }

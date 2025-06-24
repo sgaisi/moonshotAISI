@@ -18,7 +18,7 @@ def api_create_recipe(
     prompt_templates: list[str],
     metrics: list[str],
     grading_scale: dict[str, list[int]],
-    tools: Optional[list[str]] = None
+    tools: list[str] = []
 ) -> str:
     """
     Creates a new recipe with the given parameters.
@@ -42,6 +42,7 @@ def api_create_recipe(
     Returns:
         str: The ID of the newly created recipe.
     """
+    
     rec_args = RecipeArguments(
         id="",
         name=name,

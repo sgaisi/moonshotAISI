@@ -42,6 +42,10 @@ class TestCollectionApiRecipe:
             "tests/unit-tests/src/data/recipes/tool-recipe.json",
         )
         shutil.copyfile(
+            "tests/unit-tests/common/samples/tool-recipe-1.json",
+            "tests/unit-tests/src/data/recipes/tool-recipe-1.json",
+        )
+        shutil.copyfile(
             "tests/unit-tests/common/samples/tools-temp.py",
             "tests/unit-tests/src/data/tools/tools-temp.py",
         )
@@ -74,12 +78,17 @@ class TestCollectionApiRecipe:
             "tests/unit-tests/src/data/recipes/my-new-rec-ipe-1-23.json",
             "tests/unit-tests/src/data/recipes/my-new-recipe-1.json",
             "tests/unit-tests/src/data/recipes/my-new-recipe.json",
+            "tests/unit-tests/src/data/recipes/my-new-tool-1.json",
             "tests/unit-tests/src/data/recipes/none.json",
+            "tests/unit-tests/src/data/recipes/my-new-tool.json",
             "tests/unit-tests/src/data/prompt-templates/mcq-template.json",
             "tests/unit-tests/src/data/prompt-templates/analogical-similarity.json",
             "tests/unit-tests/src/data/metrics/exactstrmatch.py",
             "tests/unit-tests/src/data/recipes/tool-recipe.json",
+            "tests/unit-tests/src/data/recipes/tool-recipe-1.json",
             "tests/unit-tests/src/data/tools/tools-temp.py",
+            
+
         ]
         for recipe_path in recipe_paths:
             if os.path.exists(recipe_path):
@@ -99,10 +108,9 @@ class TestCollectionApiRecipe:
                     "tags": ["food"],
                     "categories": ["fairness"],
                     "datasets": ["arc-easy"],
-                    "prompt_templates": ["analogical-similarity"],
+                    "prompt_templates": [""],
                     "metrics": ["exactstrmatch"],
                     "grading_scale": {},
-                    "tools": ["tools-temp"],
                 },
                 {"expected_output": True, "expected_id": "my-valid-recipe"},
             ),
@@ -118,20 +126,6 @@ class TestCollectionApiRecipe:
                     "grading_scale": {},
                 },
                 {"expected_output": True, "expected_id": "my-new-recipe"},
-            ),
-            (
-                {
-                    "name": "missing-tool-recipe",
-                    "description": "Recipe with missing tool",
-                    "tags": ["tag"],
-                    "categories": ["cat"],
-                    "datasets": ["arc-easy"],
-                    "prompt_templates": ["analogical-similarity"],
-                    "metrics": ["exactstrmatch"],
-                    "grading_scale": {"PASS": [0, 49], "FAIL": [50, 100]},
-                    "tools": ["missing_tool"],
-                },
-                {"expected_output": RuntimeError},
             ),
             (
                 {
@@ -226,6 +220,36 @@ class TestCollectionApiRecipe:
                     "grading_scale": {},
                 },
                 {"expected_output": True, "expected_id": "my-new-recipe"},
+            ),
+            # Valid cases for tools
+            (
+                {
+                    "name": "my-new-tool",
+                    "description": "My new Recipe!",
+                    "tags": ["food"],
+                    "categories": ["fairness"],
+                    "datasets": ["arc-easy"],
+                    "prompt_templates": ["analogical-similarity"],
+                    "metrics": ["exactstrmatch"],
+                    "grading_scale": {},
+                    "tool": []
+                },
+                {"expected_output": True, "expected_id": "my-new-tool"},
+            ),
+            (
+                {
+                    "name": "my-new-tool-1",
+                    "description": "My new Recipe!",
+                    "tags": ["food"],
+                    "categories": ["fairness"],
+                    "datasets": ["arc-easy"],
+                    "prompt_templates": ["analogical-similarity"],
+                    "metrics": ["exactstrmatch"],
+                    "grading_scale": {},
+                    "tool":["tool-temp"]
+                    
+                },
+                {"expected_output": True, "expected_id": "my-new-tool-1"},
             ),
             # Invalid cases for name
             (
@@ -789,6 +813,99 @@ class TestCollectionApiRecipe:
                     "expected_exception": "ValidationError",
                 },
             ),
+            
+            #Test for invalid tools
+            (
+                {
+                    "name": "missing-tool-recipe",
+                    "description": "Recipe with missing tool",
+                    "tags": ["tag"],
+                    "categories": ["cat"],
+                    "datasets": ["arc-easy"],
+                    "prompt_templates": ["analogical-similarity"],
+                    "metrics": ["exactstrmatch"],
+                    "grading_scale": {"PASS": [0, 49], "FAIL": [50, 100]},
+                    "tools": ["missing_tool"],
+                },
+                {"expected_output":False,
+                 "expected_id": "missing-tool-recipe",
+                 "expected_error_message": "[Recipe] Tools missing_tool does not exist.",
+                 "expected_exception": "RuntimeError"
+                 },
+            ),
+            (
+                {
+                    "name": "missing-tool-recipe",
+                    "description": "Recipe with missing tool",
+                    "tags": ["tag"],
+                    "categories": ["cat"],
+                    "datasets": ["arc-easy"],
+                    "prompt_templates": ["analogical-similarity"],
+                    "metrics": ["exactstrmatch"],
+                    "grading_scale": {"PASS": [0, 49], "FAIL": [50, 100]},
+                    "tools": {},
+                },
+                {"expected_output":False,
+                 "expected_id": "missing-tool-recipe",
+                "expected_error_message": "Input should be a valid list",
+                "expected_exception": "ValidationError",
+                 },
+            ),
+            (
+                {
+                    "name": "missing-tool-recipe",
+                    "description": "Recipe with missing tool",
+                    "tags": ["tag"],
+                    "categories": ["cat"],
+                    "datasets": ["arc-easy"],
+                    "prompt_templates": ["analogical-similarity"],
+                    "metrics": ["exactstrmatch"],
+                    "grading_scale": {"PASS": [0, 49], "FAIL": [50, 100]},
+                    "tools": None,
+                },
+                {"expected_output":False,
+                 "expected_id": "missing-tool-recipe",
+                "expected_error_message": "Input should be a valid list",
+                "expected_exception": "ValidationError",
+                 },
+            ),
+            
+            (
+                {
+                    "name": "missing-tool-recipe",
+                    "description": "Recipe with missing tool",
+                    "tags": ["tag"],
+                    "categories": ["cat"],
+                    "datasets": ["arc-easy"],
+                    "prompt_templates": ["analogical-similarity"],
+                    "metrics": ["exactstrmatch"],
+                    "grading_scale": {"PASS": [0, 49], "FAIL": [50, 100]},
+                    "tools": ["tool-temp",123],
+                },
+                {"expected_output":False,
+                 "expected_id": "missing-tool-recipe",
+                "expected_error_message": "Input should be a valid string",
+                "expected_exception": "ValidationError",
+                 },
+            ),
+                        (
+                {
+                    "name": "missing-tool-recipe",
+                    "description": "Recipe with missing tool",
+                    "tags": ["tag"],
+                    "categories": ["cat"],
+                    "datasets": ["arc-easy"],
+                    "prompt_templates": ["analogical-similarity"],
+                    "metrics": ["exactstrmatch"],
+                    "grading_scale": {"PASS": [0, 49], "FAIL": [50, 100]},
+                    "tools": "tool-temp",
+                },
+                {"expected_output":False,
+                 "expected_id": "missing-tool-recipe",
+                "expected_error_message": "Input should be a valid list",
+                "expected_exception": "ValidationError",
+                 },
+            ),
         ],
     )
     def test_api_create_recipe(self, input_args, expected_dict):
@@ -901,7 +1018,7 @@ class TestCollectionApiRecipe:
     @pytest.mark.parametrize(
         "recipe_id,expected_dict",
         [
-            # Valid case
+            # Valid cases
             (
                 "arc",
                 {
@@ -928,28 +1045,54 @@ class TestCollectionApiRecipe:
                             "num_of_metrics": 1,
                             "num_of_datasets_prompts": {"arc-easy": 1},
                         },
-                        "tools": [],
+                        "tools":[]
                     }
                 },
             ),
             (
-                "my-valid-recipe",
+                
+                "tool-recipe",
                 {
                     "expected_output": {
-                        "id": "my-valid-recipe",
-                        "name": "my-valid-recipe",
+                        "id": "tool-recipe",
+                        "name": "tool-recipe",
                         "description": "My new Recipe!",
                         "tags": ["food"],
                         "categories": ["fairness"],
                         "datasets": ["arc-easy"],
-                        "prompt_templates": ["analogical-similarity"],
+                        "prompt_templates": [],
                         "metrics": ["exactstrmatch"],
                         "grading_scale": {},
                         "tools": ["tools-temp"],
                         "stats": {
                             "num_of_tags": 1,
                             "num_of_datasets": 1,
-                            "num_of_prompt_templates": 1,
+                            "num_of_prompt_templates": 0,
+                            "num_of_metrics": 1,
+                            "num_of_datasets_prompts": {"arc-easy": 1},
+                        },
+                    }
+                },
+            ),
+            # Empty Array
+            ( 
+                "tool-recipe-1",
+                {
+                    "expected_output": {
+                        "id": "tool-recipe-1",
+                        "name": "tool-recipe",
+                        "description": "My new Recipe!",
+                        "tags": ["food"],
+                        "categories": ["fairness"],
+                        "datasets": ["arc-easy"],
+                        "prompt_templates": [],
+                        "metrics": ["exactstrmatch"],
+                        "grading_scale": {},
+                        "tools": [],
+                        "stats": {
+                            "num_of_tags": 1,
+                            "num_of_datasets": 1,
+                            "num_of_prompt_templates": 0,
                             "num_of_metrics": 1,
                             "num_of_datasets_prompts": {"arc-easy": 1},
                         },
@@ -957,14 +1100,6 @@ class TestCollectionApiRecipe:
                 },
             ),
             # Invalid cases
-            (
-                "missing-tool-recipe",
-                {
-                    "expected_output": False,
-                    "expected_error_message": "[Recipe] Tools missing_tool does not exist.",
-                    "expected_exception": "RuntimeError",
-                },
-            ),
             (
                 "vanilla-cake",
                 {
@@ -1092,7 +1227,7 @@ class TestCollectionApiRecipe:
                                 "num_of_metrics": 1,
                                 "num_of_datasets_prompts": {"arc-easy": 1},
                             },
-                            "tools": [],
+                            "tools":[]
                         }
                     ]
                 },
@@ -1585,7 +1720,46 @@ class TestCollectionApiRecipe:
                     "num_of_metrics": 1,
                     "num_of_datasets_prompts": {"arc-easy": 1},
                 },
-                "tools": []
+                "tools": [],
+            },
+            {
+                        "id": "tool-recipe",
+                        "name": "tool-recipe",
+                        "description": "My new Recipe!",
+                        "tags": ["food"],
+                        "categories": ["fairness"],
+                        "datasets": ["arc-easy"],
+                        "prompt_templates": [],
+                        "metrics": ["exactstrmatch"],
+                        "grading_scale": {},
+                        "tools": ["tools-temp"],
+                        "stats": {
+                            "num_of_tags": 1,
+                            "num_of_datasets": 1,
+                            "num_of_prompt_templates": 0,
+                            "num_of_metrics": 1,
+                            "num_of_datasets_prompts": {"arc-easy": 1},
+                        },
+            },
+            # Empty Array
+            {
+                        "id": "tool-recipe-1",
+                        "name": "tool-recipe",
+                        "description": "My new Recipe!",
+                        "tags": ["food"],
+                        "categories": ["fairness"],
+                        "datasets": ["arc-easy"],
+                        "prompt_templates": [],
+                        "metrics": ["exactstrmatch"],
+                        "grading_scale": {},
+                        "tools": [],
+                        "stats": {
+                            "num_of_tags": 1,
+                            "num_of_datasets": 1,
+                            "num_of_prompt_templates": 0,
+                            "num_of_metrics": 1,
+                            "num_of_datasets_prompts": {"arc-easy": 1},
+                        },
             }
         ]
 
@@ -1593,7 +1767,6 @@ class TestCollectionApiRecipe:
         assert len(actual_recipes) == len(
             expected_recipes
         ), "The number of recipes returned does not match the expected count."
-
         for recipe in actual_recipes:
             assert (
                 recipe in expected_recipes
@@ -1608,7 +1781,7 @@ class TestCollectionApiRecipe:
 
         This test ensures that the api_get_all_recipe_name function returns a list containing the correct recipe names.
         """
-        expected_recipe_names = ["arc"]
+        expected_recipe_names = ["arc","tool-recipe","tool-recipe-1"]
 
         recipe_names_response = api_get_all_recipe_name()
         assert len(recipe_names_response) == len(
