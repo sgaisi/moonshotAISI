@@ -1,3 +1,4 @@
+import ast
 import asyncio
 from ast import literal_eval
 
@@ -52,6 +53,7 @@ from moonshot.integrations.cli.cli_errors import (
     ERROR_BENCHMARK_UPDATE_RECIPE_UPDATE_VALUES_VALIDATION,
     ERROR_BENCHMARK_UPDATE_RECIPE_UPDATE_VALUES_VALIDATION_1,
     ERROR_BENCHMARK_VIEW_RECIPE_RECIPE_VALIDATION,
+    ERROR_BENCHMARK_ADD_RECIPE_TOOLS_VALIDATION,
 )
 from moonshot.integrations.cli.common.display_helper import display_view_list_format
 from moonshot.integrations.cli.utils.process_data import filter_data
@@ -130,6 +132,18 @@ def add_recipe(args) -> None:
             or args.grading_scale is None
         ):
             raise TypeError(ERROR_BENCHMARK_ADD_RECIPE_GRADING_SCALE_VALIDATION)
+        
+        
+        parsed_tools = []
+        if hasattr(args, 'tools') and args.tools is not None:
+            try:
+                parsed_tools = ast.literal_eval(args.tools)
+                if not isinstance(parsed_tools, list) or not all(isinstance(t, str) and t.strip() for t in parsed_tools):
+                    raise ValueError
+            except Exception:
+                raise TypeError(ERROR_BENCHMARK_ADD_RECIPE_TOOLS_VALIDATION)
+
+
 
         tags = literal_eval(args.tags)
         categories = literal_eval(args.categories)
@@ -137,6 +151,7 @@ def add_recipe(args) -> None:
         prompt_templates = literal_eval(args.prompt_templates)
         metrics = literal_eval(args.metrics)
         grading_scale = literal_eval(args.grading_scale)
+        tools = parsed_tools
 
         if not (isinstance(tags, list) and all(isinstance(tag, str) for tag in tags)):
             raise ValueError(ERROR_BENCHMARK_ADD_RECIPE_TAGS_LIST_STR_VALIDATION)
@@ -191,6 +206,7 @@ def add_recipe(args) -> None:
             prompt_templates,
             metrics,
             grading_scale,
+            tools,
         )
         print(f"[add_recipe]: Recipe ({new_recipe_id}) created.")
     except Exception as e:
@@ -606,7 +622,6 @@ def _display_recipes(recipes_list: list) -> None:
             f"{tags_info}\n\n{categories_info}\n\n{grading_scale_info}\n\n{stats_info}"
         )
         contains_info = f"{datasets_info}\n\n{prompt_templates_info}\n\n{metrics_info}"
-
         table.add_section()
         table.add_row(str(idx), recipe_info, contains_info)
     console.print(table)
@@ -730,7 +745,7 @@ def _generate_recipe_table(recipes: list, endpoints: list, results: dict) -> Non
 # ------------------------------------------------------------------------------
 # Add recipe arguments
 add_recipe_args = cmd2.Cmd2ArgumentParser(
-    description="Add a new recipe. The 'name' argument will be slugified to create a unique identifier.",
+    description="Add a new recipe. The 'name' argument will be slugified to create a unique identifier, 'tools' argument is optional.",
     epilog="Example:\n add_recipe 'My new recipe' "
     "'I am recipe description' "
     "\"['category1','category2']\" "
@@ -738,7 +753,9 @@ add_recipe_args = cmd2.Cmd2ArgumentParser(
     "\"['bertscore','bleuscore']\" "
     "-p \"['analogical-similarity','mmlu']\" "
     "-t \"['tag1','tag2']\" "
-    "-g \"{'A':[80,100],'B':[60,79],'C':[40,59],'D':[20,39],'E':[0,19]}\" ",
+    "-g \"{'A':[80,100],'B':[60,79],'C':[40,59],'D':[20,39],'E':[0,19]}\" "
+    "-tl \"['jointtesting3']\" ",
+    
 )
 add_recipe_args.add_argument("name", type=str, help="Name of the new recipe")
 add_recipe_args.add_argument(
@@ -772,6 +789,13 @@ add_recipe_args.add_argument(
     help="Dict of grading scale for the metric to be included in the new recipe",
     nargs="?",
 )
+add_recipe_args.add_argument(
+    "-tl",
+    "--tools",
+    type=str,
+    help="Tools file for the agentic module to be included in the new recipe",
+    nargs="?",
+)
 
 # Update recipe arguments
 update_recipe_args = cmd2.Cmd2ArgumentParser(
@@ -784,7 +808,8 @@ update_recipe_args = cmd2.Cmd2ArgumentParser(
     "  datasets: A list of datasets used in the recipe. \n"
     "  prompt_templates: A list of prompt templates for the recipe. \n"
     "  metrics: A list of metrics to evaluate the recipe. \n"
-    "  grading_scale: A list of grading scale used in the recipe. \n\n"
+    "  grading_scale: A list of grading scale used in the recipe. \n"
+    "  tools: A list of tools used in the recipe (optional).\n\n"
     "Example command:\n"
     "  update_recipe my-new-recipe \"[('name', 'My Updated Recipe'), ('tags', ['fairness', 'bbq'])]\" ",
 )

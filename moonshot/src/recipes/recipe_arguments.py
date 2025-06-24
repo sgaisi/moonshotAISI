@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
@@ -23,6 +23,9 @@ class RecipeArguments(BaseModel):
 
     # prompt_templates (list): The list of prompt templates in the recipe.
     prompt_templates: list[str]
+
+    # tools (str) : The list of tools used in the recipe.
+    tools: Optional[list[str]] = []
 
     # metrics (list): The list of metrics in the recipe.
     metrics: list[str] = Field(min_length=1)
@@ -93,6 +96,7 @@ class RecipeArguments(BaseModel):
             dict: A dictionary representation of the RecipeArguments object.
             The keys are the attribute names and the values are the attribute values.
         """
+
         return {
             "id": self.id,
             "name": self.name,
@@ -104,4 +108,5 @@ class RecipeArguments(BaseModel):
             "metrics": self.metrics,
             "grading_scale": self.grading_scale,
             "stats": self.stats,
+            "tools": self.tools,
         }

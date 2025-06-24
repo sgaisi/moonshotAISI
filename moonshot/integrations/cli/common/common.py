@@ -29,6 +29,10 @@ from moonshot.integrations.cli.common.prompt_template import (
     list_prompt_templates_args,
 )
 
+from moonshot.integrations.cli.common.inspect_to_moonshot_results import (
+    convert_inspect_result,
+    convert_inspect_result_args,
+)
 
 @cmd2.with_default_category("Moonshot Common")
 class CommonCommandSet(cmd2.CommandSet):
@@ -70,6 +74,14 @@ class CommonCommandSet(cmd2.CommandSet):
     def do_download_dataset(self, args: argparse.Namespace) -> None:
         download_dataset(args)
 
+    
+    convert_inspect_result_parser = argparse.ArgumentParser()
+    convert_inspect_result_args(convert_inspect_result_parser)
+    @cmd2.with_argparser(convert_inspect_result_parser)
+    def do_convert_inspect_results(self, args: argparse.Namespace) -> None:
+        convert_inspect_result(args)
+
+        
     # ------------------------------------------------------------------------------
     # Delete contents
     # ------------------------------------------------------------------------------

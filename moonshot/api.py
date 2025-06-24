@@ -72,6 +72,7 @@ from moonshot.src.api.api_result import (
     api_read_result,
     api_read_results,
 )
+from moonshot.src.api.api_inspect_to_moonshot_results import api_inspect_to_moonshot_results
 from moonshot.src.api.api_run import api_get_all_run
 from moonshot.src.api.api_runner import (
     api_create_runner,
@@ -170,4 +171,5 @@ __all__ = [
     "api_delete_bookmark",
     "api_delete_all_bookmark",
     "api_export_bookmarks",
+    "api_inspect_to_moonshot_results",
 ]
