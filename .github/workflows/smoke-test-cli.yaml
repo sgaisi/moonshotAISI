@@ -27,6 +27,12 @@ on:
         required: true
         default: 'dev_main'
         type: string
+      moonshot_smoke_testing_branch:
+        description: 'Moonshot Smoke Testing Branch / Tag Name'
+        required: false
+        default: 'main'
+        type: string
+
 
 # Allow one concurrent deployment
 concurrency:
@@ -74,7 +80,7 @@ jobs:
       with: 
          repository: sgaisi/moonshot-data-aisi
          ref: ${{ vars.MOONSHOT_DATA_BRANCH }}
-         path: moonshot-data
+         path: moonshot-data-aisi
 
     - name: Checkout Moonshot Data (Workflow Dispatch)
       if: github.event_name == 'workflow_dispatch'
@@ -82,12 +88,12 @@ jobs:
       with: 
          repository: sgaisi/moonshot-data-aisi
          ref: ${{ inputs.moonshot_data_branch }}
-         path: moonshot-data
+         path: moonshot-data-aisi
 
     - name: Setup Moonshot Data
       run: |
         source venv/bin/activate
-        cd moonshot-data
+        cd moonshot-data-aisi
         pip install -r requirements.txt
 
     - name: Checkout Moonshot UI (Pull Request Review)
@@ -96,7 +102,7 @@ jobs:
       with:
         repository: sgaisi/moonshot-ui-aisi
         ref: ${{ vars.MOONSHOT_UI_BRANCH }}
-        path: moonshot-ui
+        path: moonshot-ui-aisi
 
     - name: Checkout Moonshot UI (Workflow Dispatch)
       if: github.event_name == 'workflow_dispatch'
@@ -104,11 +110,11 @@ jobs:
       with:
         repository: sgaisi/moonshot-ui-aisi
         ref: ${{ inputs.moonshot_ui_branch }}
-        path: moonshot-ui
+        path: moonshot-ui-aisi
     
     - name: Setup Moonshot UI
       run: |
-        cd moonshot-ui
+        cd moonshot-ui-aisi
         npm ci
         npm run build
         cd ../
@@ -117,7 +123,8 @@ jobs:
       uses: actions/checkout@v4
       with:
           repository: sgaisi/moonshot-smoke-testing-aisi
-          path: moonshot-smoke-testing
+          ref: ${{ inputs.moonshot_smoke_testing_branch }}
+          path: moonshot-smoke-testing-aisi
 
     - name: Run Smoke Test
       env: 
@@ -129,7 +136,7 @@ jobs:
         CLI_DIR: ${{ secrets.CLI_DIR }}
       run: |
          source venv/bin/activate
-         cd moonshot-smoke-testing
+         cd moonshot-smoke-testing-aisi
          cd tests
          pip install python-dotenv
          pip install pytest

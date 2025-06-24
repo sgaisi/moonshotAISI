@@ -853,6 +853,7 @@ class TestCollectionApiRecipe:
                             "num_of_metrics": 1,
                             "num_of_datasets_prompts": {"arc-easy": 1},
                         },
+                        "tools": []
                     }
                 },
             ),
@@ -984,6 +985,7 @@ class TestCollectionApiRecipe:
                                 "num_of_metrics": 1,
                                 "num_of_datasets_prompts": {"arc-easy": 1},
                             },
+                            "tools": []
                         }
                     ]
                 },
@@ -1463,6 +1465,7 @@ class TestCollectionApiRecipe:
                     "num_of_metrics": 1,
                     "num_of_datasets_prompts": {"arc-easy": 1},
                 },
+                "tools": []
             }
         ]
 
