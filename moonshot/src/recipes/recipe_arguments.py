@@ -25,7 +25,7 @@ class RecipeArguments(BaseModel):
     prompt_templates: list[str]
 
     # tools (str) : The list of tools used in the recipe.
-    tools: Optional[list[str]] = None
+    tools: Optional[list[str]] = Field(default_factory=list)
 
     # metrics (list): The list of metrics in the recipe.
     metrics: list[str] = Field(min_length=1)
@@ -96,6 +96,7 @@ class RecipeArguments(BaseModel):
             dict: A dictionary representation of the RecipeArguments object.
             The keys are the attribute names and the values are the attribute values.
         """
+
         return {
             "id": self.id,
             "name": self.name,

@@ -159,13 +159,13 @@ jobs:
     - name: Print Environment Variables
       run: env
       
-    - name: Upload Playwright Traces
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-          name: playwright-trace-integration-ui-test-endpoint-${{ github.run_id }}
-          path: |
-            /home/runner/work/moonshotAISI/moonshotAISI/moonshot-integration-testing-aisi/ui-integration-testing/test-results
+    # - name: Upload Playwright Traces
+    #   if: always()
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #       name: playwright-trace-integration-ui-test-endpoint-${{ github.run_id }}
+    #       path: |
+    #         /home/runner/work/moonshotAISI/moonshotAISI/moonshot-integration-testing-aisi/ui-integration-testing/test-results
             
     # - name: TestRail upload results
     #   env:
@@ -307,13 +307,13 @@ jobs:
     - name: Print Environment Variables
       run: env
       
-    - name: Upload Playwright Traces
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-          name: playwright-trace-integration-ui-test-homepage-${{ github.run_id }}
-          path: |
-            /home/runner/work/moonshotAISI/moonshotAISI/moonshot-integration-testing-aisi/ui-integration-testing/test-results
+    # - name: Upload Playwright Traces
+    #   if: always()
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #       name: playwright-trace-integration-ui-test-homepage-${{ github.run_id }}
+    #       path: |
+    #         /home/runner/work/moonshotAISI/moonshotAISI/moonshot-integration-testing-aisi/ui-integration-testing/test-results
             
     # - name: TestRail upload results
     #   env:
@@ -455,13 +455,13 @@ jobs:
     - name: Print Environment Variables
       run: env
       
-    - name: Upload Playwright Traces
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-          name: playwright-trace-integration-ui-test-benchmarking-1-${{ github.run_id }}
-          path: |
-            /home/runner/work/moonshotAISI/moonshotAISI/moonshot-integration-testing-aisi/ui-integration-testing/test-results
+    # - name: Upload Playwright Traces
+    #   if: always()
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #       name: playwright-trace-integration-ui-test-benchmarking-1-${{ github.run_id }}
+    #       path: |
+    #         /home/runner/work/moonshotAISI/moonshotAISI/moonshot-integration-testing-aisi/ui-integration-testing/test-results
             
     # - name: TestRail upload results
     #   env:
@@ -604,13 +604,13 @@ jobs:
     - name: Print Environment Variables
       run: env
       
-    - name: Upload Playwright Traces
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-          name: playwright-trace-integration-ui-test-benchmarking-2-${{ github.run_id }}
-          path: |
-            /home/runner/work/moonshotAISI/moonshotAISI/moonshot-integration-testing-aisi/ui-integration-testing/test-results
+    # - name: Upload Playwright Traces
+    #   if: always()
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #       name: playwright-trace-integration-ui-test-benchmarking-2-${{ github.run_id }}
+    #       path: |
+    #         /home/runner/work/moonshotAISI/moonshotAISI/moonshot-integration-testing-aisi/ui-integration-testing/test-results
 
 ##########################################################################################################################################################################
   integration-ui-test-red-teaming:
@@ -734,13 +734,13 @@ jobs:
     - name: Print Environment Variables
       run: env
       
-    - name: Upload Playwright Traces
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-          name: playwright-trace-integration-ui-test-redteaming-${{ github.run_id }}
-          path: |
-            /home/runner/work/moonshotAISI/moonshotAISI/moonshot-integration-testing-aisi/ui-integration-testing/test-results
+    # - name: Upload Playwright Traces
+    #   if: always()
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #       name: playwright-trace-integration-ui-test-redteaming-${{ github.run_id }}
+    #       path: |
+    #         /home/runner/work/moonshotAISI/moonshotAISI/moonshot-integration-testing-aisi/ui-integration-testing/test-results
             
     # - name: TestRail upload results
     #   env:

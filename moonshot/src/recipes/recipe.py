@@ -96,7 +96,9 @@ class Recipe:
             Recipe.check_file_exists(
                 EnvVariables.METRICS.name, rec_args.metrics, "Metric", "py"
             )
-
+            Recipe.check_file_exists(
+                EnvVariables.TOOLS.name, rec_args.tools, "Tools", "py"
+            )
             # Write as json output
             Storage.create_object(EnvVariables.RECIPES.name, rec_id, rec_info, "json")
             return rec_id
@@ -131,7 +133,7 @@ class Recipe:
             recipe_details = Recipe._read_recipe(rec_id, {})
             if not recipe_details:
                 raise RuntimeError(f"Recipe with ID '{rec_id}' does not exist.")
-
+            
             return RecipeArguments(**recipe_details)
 
         except Exception as e:
@@ -240,7 +242,9 @@ class Recipe:
             Recipe.check_file_exists(
                 EnvVariables.METRICS.name, rec_args.metrics, "Metric", "py"
             )
-
+            Recipe.check_file_exists(
+                EnvVariables.TOOLS.name, rec_args.tools, "Tools", "py"
+            )
             # Persist the updated recipe information to storage
             Storage.create_object(
                 EnvVariables.RECIPES.name, rec_args.id, rec_info, "json"
