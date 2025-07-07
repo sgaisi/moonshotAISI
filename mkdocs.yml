@@ -53,6 +53,7 @@ nav:
     - CLI : 
       - (CLI) How to Create Custom Benchmark Tests: tutorial/cli/create_benchmark_tests.md
       - (CLI) How to Create Connector Endpoint: tutorial/cli/create_endpoint.md
+      - (CLI) How to Run Agentic Tests: tutorial/cli/run_agentic_tests.md
       - (CLI) How to Run Benchmark Tests: tutorial/cli/run_benchmark_tests.md
       - (CLI) How to Run Red Teaming: tutorial/cli/run_red_teaming.md
     - Contributor:
@@ -76,7 +77,8 @@ nav:
         - (UI) Creating Custom Cookbooks: user_guide/web_ui/creating_custom_cookbooks.md
     - CLI: 
       - (CLI) Connecting to LLMs: user_guide/cli/connecting_endpoints.md
-      - (CLI) Running Benchmark: user_guide/cli/benchmarking.md
+      - (CLI) Running Benchmarking: user_guide/cli/benchmarking.md
+      - (CLI) Running Agentic Tests: user_guide/cli/agentic.md
       - (CLI) Running Red Teaming: user_guide/cli/red_teaming.md 
       - (CLI) Adding Your Own Tests: user_guide/cli/add_your_own_tests.md
       - (CLI) CLI Command List: user_guide/cli/cli_command_list.md
