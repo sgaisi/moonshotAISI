@@ -80,7 +80,7 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install -r moonshot-data/requirements.txt
-          pip install pytest pytest-mock pytest-html pytest-json pytest-cov coverage httpx anybadge
+          pip install pytest pytest-asyncio pytest-mock pytest-html pytest-json pytest-cov coverage httpx anybadge
           pip install flake8 flake8-html
 
       # Setup .env file
