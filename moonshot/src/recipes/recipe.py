@@ -133,7 +133,7 @@ class Recipe:
             recipe_details = Recipe._read_recipe(rec_id, {})
             if not recipe_details:
                 raise RuntimeError(f"Recipe with ID '{rec_id}' does not exist.")
-            
+
             return RecipeArguments(**recipe_details)
 
         except Exception as e:
