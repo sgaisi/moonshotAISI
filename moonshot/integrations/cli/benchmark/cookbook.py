@@ -506,6 +506,7 @@ def _display_view_cookbook(cookbook_info):
                 metrics,
                 grading_scale,
                 stats,
+                tools,
             ) = recipe.values()
 
             tags_info = display_view_list_format("Tags", tags)
@@ -519,10 +520,11 @@ def _display_view_cookbook(cookbook_info):
                 "Grading Scale", grading_scale
             )
             stats_info = _display_view_statistics_format("Statistics", stats)
+            tools_info = display_view_list_format("Tools", tools)
 
             recipe_info = (
                 f"[red]id: {id}[/red]\n\n[blue]{name}[/blue]\n{description}\n\n"
-                f"{tags_info}\n\n{categories_info}\n\n{grading_scale_info}\n\n{stats_info}"
+                f"{tags_info}\n\n{categories_info}\n\n{grading_scale_info}\n\n{stats_info}\n\n{tools_info}"
             )
             contains_info = (
                 f"{datasets_info}\n\n{prompt_templates_info}\n\n{metrics_info}"
