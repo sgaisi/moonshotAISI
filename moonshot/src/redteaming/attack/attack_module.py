@@ -152,9 +152,11 @@ class AttackModule:
         yield RedTeamingPromptArguments(
             conn_id=target_llm_connector_id,
             am_id=self.id,
-            cs_id=self.context_strategy_instances[0].id
-            if self.context_strategy_info
-            else "",
+            cs_id=(
+                self.context_strategy_instances[0].id
+                if self.context_strategy_info
+                else ""
+            ),
             pt_id=self.prompt_templates[0] if self.prompt_templates else "",
             me_id=self.metric_ids[0] if self.metric_ids else "",
             original_prompt=self.prompt,
@@ -238,9 +240,11 @@ class AttackModule:
                 red_teaming_prompt_arguments = RedTeamingPromptArguments(
                     conn_id=target_llm_connector.id,
                     am_id=self.id,
-                    cs_id=self.context_strategy_instances[0].id
-                    if self.context_strategy_info
-                    else "",
+                    cs_id=(
+                        self.context_strategy_instances[0].id
+                        if self.context_strategy_info
+                        else ""
+                    ),
                     me_id=self.metric_ids[0] if self.metric_ids else "",
                     pt_id=self.prompt_templates[0] if self.prompt_templates else "",
                     original_prompt=self.prompt,  # original prompt
@@ -307,9 +311,11 @@ class AttackModule:
             red_teaming_prompt_arguments = RedTeamingPromptArguments(
                 conn_id=target_llm_connector.id,
                 am_id=self.id,
-                cs_id=self.context_strategy_instances[0].id
-                if self.context_strategy_info
-                else "",
+                cs_id=(
+                    self.context_strategy_instances[0].id
+                    if self.context_strategy_info
+                    else ""
+                ),
                 me_id=self.metric_ids[0] if self.metric_ids else "",
                 pt_id=self.prompt_templates[0] if self.prompt_templates else "",
                 original_prompt=self.prompt,  # original prompt
@@ -649,7 +655,7 @@ class RedTeamingPromptArguments(BaseModel):
 
         This method collects all the attributes of the RedTeamingPromptArguments instance and forms a tuple
         with the attribute values in this specific order: conn_id, cs_id, pt_id, am_id, me_id, original_prompt,
-        connector_prompt.prompt, system_prompt, connector_prompt.predicted_results.response, 
+        connector_prompt.prompt, system_prompt, connector_prompt.predicted_results.response,
         connector_prompt.duration, start_time.
 
         Returns:
@@ -664,7 +670,11 @@ class RedTeamingPromptArguments(BaseModel):
             self.original_prompt,
             self.connector_prompt.prompt,
             self.system_prompt,
-            self.connector_prompt.predicted_results.response if self.connector_prompt.predicted_results else "",
+            (
+                self.connector_prompt.predicted_results.response
+                if self.connector_prompt.predicted_results
+                else ""
+            ),
             str(self.connector_prompt.duration),
             self.start_time,
         )
@@ -689,7 +699,11 @@ class RedTeamingPromptArguments(BaseModel):
             "original_prompt": self.original_prompt,
             "prepared_prompt": self.connector_prompt.prompt,
             "system_prompt": self.system_prompt,
-            "response": self.connector_prompt.predicted_results.response if self.connector_prompt.predicted_results else "",
+            "response": (
+                self.connector_prompt.predicted_results.response
+                if self.connector_prompt.predicted_results
+                else ""
+            ),
             "duration": str(self.connector_prompt.duration),
             "start_time": self.start_time,
         }

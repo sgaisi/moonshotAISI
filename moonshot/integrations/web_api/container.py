@@ -57,19 +57,19 @@ class Container(containers.DeclarativeContainer):
                 "log_file_backup_count": 3,
             },
             "temp_folder": str(
-                    importlib.resources.files("moonshot").joinpath(
-                        "integrations/web_api/temp"
-                    )
-                ),
+                importlib.resources.files("moonshot").joinpath(
+                    "integrations/web_api/temp"
+                )
+            ),
         }
     )
 
     benchmark_test_state: providers.Singleton[BenchmarkTestState] = providers.Singleton(
         BenchmarkTestState
     )
-    auto_red_team_test_state: providers.Singleton[
-        AutoRedTeamTestState
-    ] = providers.Singleton(AutoRedTeamTestState)
+    auto_red_team_test_state: providers.Singleton[AutoRedTeamTestState] = (
+        providers.Singleton(AutoRedTeamTestState)
+    )
     webhook: providers.Singleton[MoonshotUIWebhook] = providers.Singleton(
         MoonshotUIWebhook,
         benchmark_test_state=benchmark_test_state,
@@ -78,21 +78,21 @@ class Container(containers.DeclarativeContainer):
     runner_service: providers.Singleton[RunnerService] = providers.Singleton(
         RunnerService
     )
-    auto_red_team_test_manager: providers.Singleton[
-        AutoRedTeamTestManager
-    ] = providers.Singleton(
-        AutoRedTeamTestManager,
-        auto_red_team_test_state=auto_red_team_test_state,
-        progress_status_updater=webhook,
-        runner_service=runner_service,
+    auto_red_team_test_manager: providers.Singleton[AutoRedTeamTestManager] = (
+        providers.Singleton(
+            AutoRedTeamTestManager,
+            auto_red_team_test_state=auto_red_team_test_state,
+            progress_status_updater=webhook,
+            runner_service=runner_service,
+        )
     )
-    benchmark_test_manager: providers.Singleton[
-        BenchmarkTestManager
-    ] = providers.Singleton(
-        BenchmarkTestManager,
-        benchmark_test_state=benchmark_test_state,
-        progress_status_updater=webhook,
-        runner_service=runner_service,
+    benchmark_test_manager: providers.Singleton[BenchmarkTestManager] = (
+        providers.Singleton(
+            BenchmarkTestManager,
+            benchmark_test_state=benchmark_test_state,
+            progress_status_updater=webhook,
+            runner_service=runner_service,
+        )
     )
     session_service: providers.Singleton[SessionService] = providers.Singleton(
         SessionService,
@@ -100,16 +100,16 @@ class Container(containers.DeclarativeContainer):
         progress_status_updater=webhook,
         runner_service=runner_service,
     )
-    prompt_template_service: providers.Singleton[
-        PromptTemplateService
-    ] = providers.Singleton(PromptTemplateService)
-    context_strategy_service: providers.Singleton[
-        ContextStrategyService
-    ] = providers.Singleton(ContextStrategyService)
-    benchmarking_service: providers.Singleton[
-        BenchmarkingService
-    ] = providers.Singleton(
-        BenchmarkingService, benchmark_test_manager=benchmark_test_manager
+    prompt_template_service: providers.Singleton[PromptTemplateService] = (
+        providers.Singleton(PromptTemplateService)
+    )
+    context_strategy_service: providers.Singleton[ContextStrategyService] = (
+        providers.Singleton(ContextStrategyService)
+    )
+    benchmarking_service: providers.Singleton[BenchmarkingService] = (
+        providers.Singleton(
+            BenchmarkingService, benchmark_test_manager=benchmark_test_manager
+        )
     )
     endpoint_service: providers.Singleton[EndpointService] = providers.Singleton(
         EndpointService
@@ -120,9 +120,9 @@ class Container(containers.DeclarativeContainer):
     cookbook_service: providers.Singleton[CookbookService] = providers.Singleton(
         CookbookService
     )
-    benchmark_result_service: providers.Singleton[
-        BenchmarkResultService
-    ] = providers.Singleton(BenchmarkResultService)
+    benchmark_result_service: providers.Singleton[BenchmarkResultService] = (
+        providers.Singleton(BenchmarkResultService)
+    )
     metric_service: providers.Singleton[MetricService] = providers.Singleton(
         MetricService
     )

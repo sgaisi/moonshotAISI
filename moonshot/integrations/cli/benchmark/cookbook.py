@@ -506,7 +506,7 @@ def _display_view_cookbook(cookbook_info):
                 metrics,
                 grading_scale,
                 stats,
-                tools
+                tools,
             ) = recipe.values()
 
             tags_info = display_view_list_format("Tags", tags)
@@ -528,9 +528,7 @@ def _display_view_cookbook(cookbook_info):
             )
             contains_info = (
                 f"{datasets_info}\n\n{prompt_templates_info}\n\n{metrics_info}"
-                
             )
-
 
             table.add_section()
             table.add_row(str(recipe_id), recipe_info, contains_info)

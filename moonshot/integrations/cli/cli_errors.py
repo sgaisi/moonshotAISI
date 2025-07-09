@@ -243,7 +243,7 @@ ERROR_BENCHMARK_ADD_RECIPE_GRADING_SCALE_DICT_STR_VALIDATION = (
     "The 'grading_scale' argument must be a dictionary after evaluation."
 )
 
-ERROR_BENCHMARK_ADD_RECIPE_TOOLS_VALIDATION=(
+ERROR_BENCHMARK_ADD_RECIPE_TOOLS_VALIDATION = (
     "The 'tools' argument must be a non-empty string and not None."
 )
 

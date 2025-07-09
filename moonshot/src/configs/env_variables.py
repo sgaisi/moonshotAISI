@@ -28,6 +28,7 @@ class EnvVariables(Enum):
     RESULTS_MODULES = "RESULTS_MODULES"
     RUNNERS = "RUNNERS"
     RUNNERS_MODULES = "RUNNERS_MODULES"
+    TOOLS = "TOOLS"
 
 
 class EnvironmentVars:
@@ -121,10 +122,10 @@ class EnvironmentVars:
         env_vars.get(EnvVariables.RUNNERS_MODULES.value),
         str(importlib.resources.files(__app_name__).joinpath("data/runners-modules")),
     ]
- #   TOOLS = [
- #       env_vars.get(EnvVariables.TOOLS.value),
- #       str(importlib.resources.files(__app_name__).joinpath("data/tools")),
- #   ]    
+    TOOLS = [
+        env_vars.get(EnvVariables.TOOLS.value),
+        str(importlib.resources.files(__app_name__).joinpath("data/tools")),
+    ]
 
     @staticmethod
     def load_env(env_dict: dict | None = None) -> None:
