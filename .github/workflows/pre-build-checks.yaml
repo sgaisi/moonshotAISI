@@ -11,8 +11,7 @@ on:
   # Runs when a pull request to main is being assigned
   pull_request:
     types: [ assigned, synchronize ]
-    branches:
-      - 'dev_main'
+    branches: [ dev_main, main ]
 
   # Run this workflow manually from Actions tab
   workflow_dispatch:
@@ -167,38 +166,3 @@ jobs:
           echo "UNIT_TESTS_STATUS=${{ steps.unit_tests.outcome }}" >> $GITHUB_ENV
           echo "CODE_QUALITY_STATUS=${{ steps.code_quality.outcome }}" >> $GITHUB_ENV
           echo "DEPENDENCY_ANALYSIS_STATUS=${{ steps.dependency_analysis.outcome }}" >> $GITHUB_ENV
-
-      - name: Add comment to PR
-        if: ${{ ! cancelled() }}
-        run: |
-          COMMENT="**Workflow Status:** ${{ github.repository }} | ${{ github.workflow }} | ${{ env.PR_NUM }} \
-            \n**Status:** ${{ job.status }} \
-            \n**Details:** ${{ env.UNIT_TESTS_STATUS }} | ${{ env.CODE_COVERAGE_STATUS }} | ${{ env.CODE_QUALITY_STATUS }} | ${{ env.DEPENDENCY_STATUS }} | ${{ env.LICENSE_STATUS }} \
-            \n[View Workflow Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
-          
-          curl -L \
-            -X POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ github.token }}" \
-            https://api.github.com/repos/${{ github.repository }}/issues/${{ env.PR_NUM }}/comments \
-            -d '{"body": "'"$COMMENT"'"}'
-
-          if [[ $? -ne 0 ]]; then
-            echo "Error posting comment"
-            exit 1
-          fi
-
-      # Send slack notification
-      # - name: Send slack notification
-      #   if: ${{ ! cancelled() }}
-      #   uses: slackapi/slack-github-action@v1.26.0
-      #   with:
-      #     payload: |
-      #       {
-      #         "workflow": "${{ github.repository }} | ${{ github.workflow }} | ${{ env.PR_NUM }}",
-      #         "status": "${{ job.status }}",
-      #         "details": "${{ env.UNIT_TESTS_STATUS }} | ${{ env.CODE_COVERAGE_STATUS }} | ${{ env.CODE_QUALITY_STATUS }} | ${{ env.DEPENDENCY_STATUS }} | ${{ env.LICENSE_STATUS }}",
-      #         "ref": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-      #       }
-      #   env:
-      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

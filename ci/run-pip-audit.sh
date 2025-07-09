@@ -33,11 +33,33 @@ else
 fi
 
 if [ -f licenses-found.md ]; then
-  copyleftLic=("GPL" "LGPL" "MPL" "AGPL" "EUPL" "CCDL" "EPL" "CC-BY-SA" "OSL" "CPL")
-  echo "============ Copyleft Licenses Found ============"
+  strongCopyleftLic=("GPL" "AGPL" "EUPL" "OSL")
+  weakCopyleftLic=("LGPL" "MPL" "CCDL" "EPL" "CC-BY-SA" "CPL")
+
+  echo "============ Strong Copyleft Licenses Found ============"
   head -n 2 licenses-found.md
   while IFS= read -r line; do
-    for lic in "${copyleftLic[@]}"; do
+    # Skip text-unidecode with Artistic Licenses
+    if [[ $line == *"text-unidecode"* ]] && [[ $line == *"Artistic Licenses"* ]]; then
+      continue
+    fi
+    for lic in "${strongCopyleftLic[@]}"; do
+      if [[ $line == *"$lic"* ]]; then
+        echo "$line"
+        break
+      fi
+    done
+  done < licenses-found.md
+
+  echo "============ Weak Copyleft Licenses Found ============"
+  head -n 2 licenses-found.md
+  while IFS= read -r line; do
+    # Special case for text-unidecode
+    if [[ $line == *"text-unidecode"* ]] && [[ $line == *"Artistic Licenses"* ]]; then
+      echo "$line (Reclassified as weak copyleft)"
+      continue
+    fi
+    for lic in "${weakCopyleftLic[@]}"; do
       if [[ $line == *"$lic"* ]]; then
         echo "$line"
         break
@@ -48,11 +70,6 @@ if [ -f licenses-found.md ]; then
 else
   touch license-report.html
 fi
-
-# Create badges
-#pip install anybadge
-#python3 ci/createBadges.py dependency
-#python3 ci/createBadges.py license
 
 deactivate
 rm -rf ci-venv
