@@ -1,6 +1,6 @@
 Copyright 2025
 
-[aiverify-moonshot : main]
+[sgaisi-moonshotAISI : main]
 
 Phase: DEVELOPMENT
 Distribution: OPENSOURCE
@@ -10,7 +10,7 @@ Components:
 aiohappyeyeballs 2.4.4 : Python Software Foundation License 2.0
 aiohttp 3.10.11 : Apache License 2.0
 aiosignal 1.3.2 : Apache License 2.0
-aiverify-moonshot 0.6.0 : Apache License 2.0
+sgaisi-moonshotAISI 0.1.0 : Apache License 2.0
 annotated-types 0.7.0 : MIT License
 anyio 4.6.2.post1 : MIT License
 Click - Python Command Line Utility 8.1.8 : BSD 3-clause "New" or "Revised" License
@@ -67,7 +67,7 @@ yarl 1.13.1 : Apache License 2.0
 Licenses: 
 
 Apache License 2.0
-(aiohttp 3.10.11, aiosignal 1.3.2, aiverify-moonshot 0.6.0, datasets 2.21.0, frozenlist 1.4.1, huggingface-hub 0.25.2, moonshot-admin/moonshot 0.5.1, multidict 6.1.0, Packaging 24.2, psf-requests 2.32.3, pyarrow 17.0.0, Python tzdata 2024.2, python-dateutil 2.9.0.post0, sniffio 1.3.1, tenacity 8.5.0, yarl 1.13.1)
+(aiohttp 3.10.11, aiosignal 1.3.2, sgaisi-moonshotAISI 0.1.0, datasets 2.21.0, frozenlist 1.4.1, huggingface-hub 0.25.2, moonshot-admin/moonshot 0.5.1, multidict 6.1.0, Packaging 24.2, psf-requests 2.32.3, pyarrow 17.0.0, Python tzdata 2024.2, python-dateutil 2.9.0.post0, sniffio 1.3.1, tenacity 8.5.0, yarl 1.13.1)
 
 Apache License
 Version 2.0, January 2004
