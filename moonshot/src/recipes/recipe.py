@@ -25,6 +25,7 @@ class Recipe:
         self.datasets = rec_args.datasets
         self.prompt_templates = rec_args.prompt_templates
         self.metrics = rec_args.metrics
+        self.tools = rec_args.tools
         self.grading_scale = rec_args.grading_scale
         self.stats = rec_args.stats
 
@@ -73,6 +74,7 @@ class Recipe:
                 "tags": rec_args.tags,
                 "categories": rec_args.categories,
                 "datasets": rec_args.datasets,
+                "tools": rec_args.tools,
                 "prompt_templates": rec_args.prompt_templates,
                 "metrics": rec_args.metrics,
                 "grading_scale": rec_args.grading_scale,
@@ -94,7 +96,9 @@ class Recipe:
             Recipe.check_file_exists(
                 EnvVariables.METRICS.name, rec_args.metrics, "Metric", "py"
             )
-
+            Recipe.check_file_exists(
+                EnvVariables.TOOLS.name, rec_args.tools, "Tools", "py"
+            )
             # Write as json output
             Storage.create_object(EnvVariables.RECIPES.name, rec_id, rec_info, "json")
             return rec_id
@@ -238,7 +242,9 @@ class Recipe:
             Recipe.check_file_exists(
                 EnvVariables.METRICS.name, rec_args.metrics, "Metric", "py"
             )
-
+            Recipe.check_file_exists(
+                EnvVariables.TOOLS.name, rec_args.tools, "Tools", "py"
+            )
             # Persist the updated recipe information to storage
             Storage.create_object(
                 EnvVariables.RECIPES.name, rec_args.id, rec_info, "json"

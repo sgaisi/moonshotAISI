@@ -201,6 +201,7 @@ def test_create_recipe(test_client, mock_recipe_service, recipe_data, exception,
                         "dataset1": 41665
                     }
                 },
+                "tools": [],
                 "total_prompt_in_recipe": 5,
                 "required_config": None
             },
@@ -223,6 +224,7 @@ def test_create_recipe(test_client, mock_recipe_service, recipe_data, exception,
                         "dataset2": 41665
                     }
                 },
+                "tools": [],
                 "total_prompt_in_recipe": 5,
                 "required_config": None
             },
@@ -249,6 +251,7 @@ def test_create_recipe(test_client, mock_recipe_service, recipe_data, exception,
                         "dataset1": 41665
                     }
                 },
+                "tools": [],
                 "total_prompt_in_recipe": 5,
                 "required_config": None
             },
@@ -271,6 +274,7 @@ def test_create_recipe(test_client, mock_recipe_service, recipe_data, exception,
                         "dataset2": 41665
                     }
                 },
+                "tools": [],
                 "total_prompt_in_recipe": 5,
                 "required_config": None
             },
@@ -299,6 +303,7 @@ def test_create_recipe(test_client, mock_recipe_service, recipe_data, exception,
                         "dataset1": 41665
                     }
                 },
+                "tools": [],
                 "total_prompt_in_recipe": 5,
                 "required_config": None
             },
@@ -321,6 +326,7 @@ def test_create_recipe(test_client, mock_recipe_service, recipe_data, exception,
                         "dataset3": 41665
                     }
                 },
+                "tools": [],
                 "total_prompt_in_recipe": 5,
                 "required_config": None
             },
@@ -347,6 +353,7 @@ def test_create_recipe(test_client, mock_recipe_service, recipe_data, exception,
                         "dataset1": 41665
                     }
                 },
+                "tools": [],
                 "total_prompt_in_recipe": 5,
                 "required_config": None
             },
@@ -369,6 +376,7 @@ def test_create_recipe(test_client, mock_recipe_service, recipe_data, exception,
                         "dataset3": 41665
                     }
                 },
+                "tools": [],
                 "total_prompt_in_recipe": 5,
                 "required_config": None
             },
@@ -397,6 +405,7 @@ def test_create_recipe(test_client, mock_recipe_service, recipe_data, exception,
                         "dataset1": 41665
                     }
                 },
+                "tools": [],
                 "total_prompt_in_recipe": 5,
                 "required_config": None
             },
@@ -419,6 +428,7 @@ def test_create_recipe(test_client, mock_recipe_service, recipe_data, exception,
                         "dataset4": 41665
                     }
                 },
+                "tools": [],
                 "total_prompt_in_recipe": 5,
                 "required_config": None
             },
@@ -445,6 +455,7 @@ def test_create_recipe(test_client, mock_recipe_service, recipe_data, exception,
                         "dataset1": 41665
                     }
                 },
+                "tools": [],
                 "total_prompt_in_recipe": 5,
                 "required_config": None
             },
@@ -467,6 +478,7 @@ def test_create_recipe(test_client, mock_recipe_service, recipe_data, exception,
                         "dataset4": 41665
                     }
                 },
+                "tools": [],
                 "total_prompt_in_recipe": 5,
                 "required_config": None
             },
@@ -495,6 +507,7 @@ def test_create_recipe(test_client, mock_recipe_service, recipe_data, exception,
                         "dataset2": 41665
                     }
                 },
+                "tools": [],
                 "total_prompt_in_recipe": 5,
                 "required_config": None
             },
@@ -517,6 +530,7 @@ def test_create_recipe(test_client, mock_recipe_service, recipe_data, exception,
                         "dataset5": 41665
                     }
                 },
+                "tools": [],
                 "total_prompt_in_recipe": 5,
                 "required_config": None
             },
@@ -543,6 +557,7 @@ def test_create_recipe(test_client, mock_recipe_service, recipe_data, exception,
                         "dataset2": 41665
                     }
                 },
+                "tools": [],
                 "total_prompt_in_recipe": 5,
                 "required_config": None
             },
@@ -565,6 +580,7 @@ def test_create_recipe(test_client, mock_recipe_service, recipe_data, exception,
                         "dataset5": 41665
                     }
                 },
+                "tools": [],
                 "total_prompt_in_recipe": 5,
                 "required_config": None
             },
