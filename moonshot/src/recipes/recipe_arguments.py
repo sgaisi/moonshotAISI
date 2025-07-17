@@ -25,7 +25,7 @@ class RecipeArguments(BaseModel):
     prompt_templates: list[str]
 
     # tools (str) : The list of tools used in the recipe.
-    tools: Optional[list[str]] = []
+    tools: Optional[list[str]] = Field(default_factory=list)
 
     # metrics (list): The list of metrics in the recipe.
     metrics: list[str] = Field(min_length=1)
