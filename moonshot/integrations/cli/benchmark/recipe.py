@@ -132,18 +132,17 @@ def add_recipe(args) -> None:
             or args.grading_scale is None
         ):
             raise TypeError(ERROR_BENCHMARK_ADD_RECIPE_GRADING_SCALE_VALIDATION)
-        
-        
+
         parsed_tools = []
-        if args.tools is not None:
+        if hasattr(args, "tools") and args.tools is not None:
             try:
                 parsed_tools = ast.literal_eval(args.tools)
-                if not isinstance(parsed_tools, list) or not all(isinstance(t, str) and t.strip() for t in parsed_tools):
+                if not isinstance(parsed_tools, list) or not all(
+                    isinstance(t, str) and t.strip() for t in parsed_tools
+                ):
                     raise ValueError
             except Exception:
                 raise TypeError(ERROR_BENCHMARK_ADD_RECIPE_TOOLS_VALIDATION)
-
-
 
         tags = literal_eval(args.tags)
         categories = literal_eval(args.categories)
@@ -745,7 +744,8 @@ def _generate_recipe_table(recipes: list, endpoints: list, results: dict) -> Non
 # ------------------------------------------------------------------------------
 # Add recipe arguments
 add_recipe_args = cmd2.Cmd2ArgumentParser(
-    description="Add a new recipe. The 'name' argument will be slugified to create a unique identifier, 'tools' argument is optional.",
+    description="Add a new recipe. "
+    "The 'name' argument will be slugified to create a unique identifier, 'tools' argument is optional.",
     epilog="Example:\n add_recipe 'My new recipe' "
     "'I am recipe description' "
     "\"['category1','category2']\" "
@@ -755,7 +755,6 @@ add_recipe_args = cmd2.Cmd2ArgumentParser(
     "-t \"['tag1','tag2']\" "
     "-g \"{'A':[80,100],'B':[60,79],'C':[40,59],'D':[20,39],'E':[0,19]}\" "
     "-tl \"['jointtesting3']\" ",
-    
 )
 add_recipe_args.add_argument("name", type=str, help="Name of the new recipe")
 add_recipe_args.add_argument(

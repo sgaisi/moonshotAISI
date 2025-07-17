@@ -976,6 +976,7 @@ class TestCollectionCliRecipe:
                 eval(prompt_templates),
                 eval(metrics),
                 eval(grading_scale),
+                eval("[]"),
             )
         else:
             mock_api_create_recipe.assert_not_called()

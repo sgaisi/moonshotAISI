@@ -27,7 +27,7 @@ def api_create_connector_from_endpoint(ep_id: str) -> Connector:
 
 @validate_call
 def api_create_connectors_from_endpoints(
-    ep_ids: conlist(str, min_length=1)
+    ep_ids: conlist(str, min_length=1),
 ) -> list[Connector]:
     """
     Creates connectors for multiple endpoints based on their IDs.

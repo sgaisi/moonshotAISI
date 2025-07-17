@@ -3,10 +3,10 @@ requires = ["hatchling","hatch-build-scripts"]
 build-backend = "hatchling.build"
 
 [project]
-name = "aiverify-moonshot"
-version = "0.6.2"
+name = "sgaisi-moonshotAISI"
+version = "0.1.0"
 authors = [
-    { name="AI Verify Foundation", email="info@aiverify.sg" }
+    { name="SGAISI Moonshot", email="" }
 ]
 description = "AI Verify advances Gen AI testing with Project Moonshot."
 readme = "README.md"
@@ -89,18 +89,18 @@ exclude = [
 ]
 
 [project.urls]
-Repository = "https://github.com/aiverify-foundation/moonshot"
-Documentation = "https://aiverify-foundation.github.io/moonshot/"
-Issues = "https://github.com/aiverify-foundation/moonshot/issues"
+Repository = "https://github.com/sgaisi/moonshotAISI"
+Documentation = "https://sgaisi.github.io/moonshotAISI/"
+Issues = "https://github.com/sgaisi/moonshotAISI/issues"
 
 [tool.hatch.metadata]
 allow-direct-references = true
 
 [tool.poetry]
-name = "aiverify-moonshot"
-version = "0.6.2"
+name = "sgaisi-moonshotAISI"
+version = "0.1.0"
 description = "A simple and modular tool to evaluate and red-team any LLM application."
-authors = ["The Moonshot Team <our.moonshot.team@gmail.com>"]
+authors = ["The SGAISI Moonshot Team"]
 readme = "README.md"
 
 [tool.poetry.dependencies]

@@ -32,7 +32,7 @@ class DatasetArguments(BaseModel):
     license: str = ""
 
     # system_prompt (Optional[str]): Custom system prompt for this dataset. Takes highest priority in prompt resolution.
-    system_prompt: Optional[str] = None
+    system_prompt: str = ""
 
     def to_dict(self) -> dict:
         """
@@ -51,5 +51,5 @@ class DatasetArguments(BaseModel):
             "created_date": self.created_date,
             "reference": self.reference,
             "license": self.license,
-            "system_prompt": self.system_prompt,
+            "agents": self.agents
         }
