@@ -41,7 +41,7 @@ In this initial version, Moonshot can be used through several interfaces:
 
 ```
 # Install MoonshotAISI
-git clone -b jointTesting https://github.com/sgaisi/moonshotAISI.git
+git clone https://github.com/sgaisi/moonshotAISI.git
 cd moonshotAISI
 
 # Create a virtual environment (Optional)
@@ -55,7 +55,7 @@ venv/Scripts/Activate.ps1 (Windows Powershell)
 # Clone and install test assets and Web UI
 python -m pip install --upgrade pip~=25.1
 pip install -r requirements.txt
-python -m moonshot -i moonshot-data-aisi -moonshot-ui-aisi
+python -m moonshot -i moonshot-data-aisi -i moonshot-ui-aisi
 ```
 
 Check out our [Installation Guide](https://sgaisi.github.io/moonshotAISI/getting_started/quick_install/) for more details.

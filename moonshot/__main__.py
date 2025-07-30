@@ -141,7 +141,6 @@ def moonshot_data_installation(unattended: bool, overwrite: bool) -> None:
     """
     logger.info("Installing Moonshot Data from GitHub")
     repo = "https://github.com/sgaisi/moonshot-data-aisi.git"
-    branch = "jointTesting"
     folder_name = repo.split("/")[-1].replace(".git", "")
     do_install = True
 
@@ -172,9 +171,9 @@ def moonshot_data_installation(unattended: bool, overwrite: bool) -> None:
                 )
 
     if do_install:
-        logger.info(f"Cloning {repo} and Branch {branch}")
+        logger.info(f"Cloning {repo}")
         # Clone the repository
-        run_subprocess(["git", "clone", repo, "-b", branch], check=True)
+        run_subprocess(["git", "clone", repo], check=True)
 
         # Create .env to point to installed folder
         ms_lib_env_file(folder_name)
