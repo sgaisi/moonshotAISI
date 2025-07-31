@@ -5,6 +5,7 @@ from moonshot.src.cookbooks.cookbook_arguments import (
 )
 from pydantic import Field
 
+
 class CookbookCreateDTO(CookbookPydanticModel):
     id: Optional[str] = None
     name: str = Field(..., min_length=1)

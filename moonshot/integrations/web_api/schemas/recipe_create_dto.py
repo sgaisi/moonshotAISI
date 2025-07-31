@@ -4,6 +4,7 @@ from moonshot.src.recipes.recipe_arguments import RecipeArguments as RecipePydan
 
 from pydantic import Field
 
+
 class RecipeCreateDTO(RecipePydanticModel):
     id: Optional[str] = None
     name: str = Field(..., min_length=1)

@@ -50,16 +50,15 @@ def new_session(args) -> None:
     Creates a new red teaming session or loads an existing one.
 
     This function either creates a new runner and session or loads an existing runner based on the provided arguments.
-    It updates the global active_session with the session metadata and displays the chat history.
+    It updates the active_session with the session metadata and displays the chat history.
 
     Args:
         args (Namespace): The arguments passed to the function, containing:
             - runner_id (str): The ID of the runner.
             - context_strategy (str, optional): The context strategy to be used.
             - prompt_template (str, optional): The prompt template to be used.
-            - endpoints (str, optional): The list of endpoints for the runner."""
-    global active_session
-
+            - endpoints (str, optional): The list of endpoints for the runner.
+    """
     try:
         required_parameters = [("runner_id", str)]
         optional_parameters = [("context_strategy", str), ("prompt_template", str)]
@@ -118,9 +117,9 @@ def new_session(args) -> None:
             if session_metadata:
                 active_session.update(session_metadata)
                 if active_session["context_strategy"]:
-                    active_session[
-                        "cs_num_of_prev_prompts"
-                    ] = Session.DEFAULT_CONTEXT_STRATEGY_PROMPT
+                    active_session["cs_num_of_prev_prompts"] = (
+                        Session.DEFAULT_CONTEXT_STRATEGY_PROMPT
+                    )
                 print(f"[new_session] Using session: {active_session['session_id']}")
                 update_chat_display()
             else:
@@ -136,7 +135,6 @@ def use_session(args) -> None:
     Args:
         args (Namespace): The arguments passed to the function.
     """
-    global active_session
 
     # Load session metadata
     try:
@@ -155,9 +153,9 @@ def use_session(args) -> None:
         # Set the current session
         active_session.update(session_metadata)
         if active_session["context_strategy"]:
-            active_session[
-                "cs_num_of_prev_prompts"
-            ] = Session.DEFAULT_CONTEXT_STRATEGY_PROMPT
+            active_session["cs_num_of_prev_prompts"] = (
+                Session.DEFAULT_CONTEXT_STRATEGY_PROMPT
+            )
         print(f"Using session: {active_session['session_id']}. ")
         update_chat_display()
     except Exception as e:
@@ -168,7 +166,6 @@ def show_prompts() -> None:
     """
     Shows the chat table in a session so that users don't have to restart a session to view the chat table
     """
-    global active_session
 
     if not active_session:
         print(ERROR_RED_TEAMING_SHOW_PROMPTS_NO_ACTIVE_SESSION_VALIDATION)
@@ -181,7 +178,6 @@ def end_session() -> None:
     """
     Ends the current session by clearing active_session variable.
     """
-    global active_session
     active_session.clear()
 
 
@@ -249,7 +245,6 @@ def update_chat_display() -> None:
     The table includes columns for the chat ID, prepared prompts, and the prompt/response pairs.
     If there is no active session, a message is printed to the console.
     """
-    global active_session
 
     if active_session:
         list_of_endpoint_chats = api_get_all_chats_from_session(
@@ -311,7 +306,6 @@ def add_bookmark(args) -> None:
 
     If there is no active session, a message is printed to the console and the function returns.
     """
-    global active_session
 
     if active_session:
         try:
@@ -372,7 +366,6 @@ def use_bookmark(args) -> None:
 
     If there is no active session, a message is printed to the console and the function returns.
     """
-    global active_session
     if active_session:
         try:
             bookmark_name = args.bookmark_name
@@ -747,7 +740,6 @@ def _reload_session(runner_id: str) -> None:
     Args:
         runner_id (str): The ID of the runner for which the session metadata needs to be reloaded.
     """
-    global active_session
     try:
         session_metadata = api_load_session(runner_id)
         if not session_metadata:

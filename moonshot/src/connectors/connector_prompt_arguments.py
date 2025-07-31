@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, Any
+from typing import Annotated, Any, List
 
 from pydantic import BaseModel, Field
 
@@ -25,3 +25,4 @@ class ConnectorPromptArguments(BaseModel):
 
     # The duration it took to get the results, must be a positive float
     duration: Annotated[float, Field(strict=True, ge=0.0)] = 0.0
+    tools: List[str] = []
