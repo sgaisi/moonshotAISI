@@ -100,15 +100,15 @@ class SessionService(BaseService):
         retn_session = []
         runners_with_session = moonshot_api.api_get_all_runner()
         sessions_metadata_dicts = moonshot_api.api_get_all_session_metadata()
-        
-        runners_dict = {runner['id']: runner for runner in runners_with_session}
-        
+
+        runners_dict = {runner["id"]: runner for runner in runners_with_session}
+
         for session in sessions_metadata_dicts:
             sess_id = session.get("session_id")
             if sess_id in runners_dict:
-                session['description'] = runners_dict[sess_id]['description']
+                session["description"] = runners_dict[sess_id]["description"]
                 retn_session.append(session)
-        
+
         return [
             SessionMetadataModel(**metadata) for metadata in sessions_metadata_dicts
         ]
@@ -305,14 +305,16 @@ class SessionService(BaseService):
         rt_args = {
             "prompt": prompt.user_prompt,
             "system_prompt": system_prompt,
-            "context_strategy_info": [
-                {
-                    "context_strategy_id": context_strategy,
-                    "num_of_prev_prompts": num_of_prev_prompts,
-                }
-            ]
-            if context_strategy
-            else [],
+            "context_strategy_info": (
+                [
+                    {
+                        "context_strategy_id": context_strategy,
+                        "num_of_prev_prompts": num_of_prev_prompts,
+                    }
+                ]
+                if context_strategy
+                else []
+            ),
             "prompt_template_ids": [prompt_template] if prompt_template else [],
         }
 
