@@ -179,11 +179,22 @@ class EnvironmentVars:
             str: The file path of the file.
         """
         for directory in EnvironmentVars.get_file_directory(file_type):
-            file_path = Path(directory) / file_name
+            try:
+                base_dir = Path(directory).resolve()
+                file_path = (base_dir / file_name).resolve()
+            except (FileNotFoundError, OSError) as e:
+                logger.warning(f"Skipping directory {directory}: {e}")
+                continue
+            try:
+                file_path.relative_to(base_dir)
+            except ValueError:
+                logger.warning(f"Skipping directory {directory}: Path traversal detected in file name")
+                continue
+
             if ignore_existance:
                 return str(file_path)
             else:
-                if Path(file_path).exists():
+                if file_path.exists():
                     return str(file_path)
         return ""
 
