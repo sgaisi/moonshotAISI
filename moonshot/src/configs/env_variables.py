@@ -1,6 +1,7 @@
 import importlib.resources
 from enum import Enum
 from pathlib import Path
+from pathvalidate import sanitize_filename
 
 from moonshot.src.utils.log import configure_logger
 
@@ -164,7 +165,7 @@ class EnvironmentVars:
             )
 
     @staticmethod
-    def get_file_path(file_type: str, file_name: str, ignore_existance: bool) -> str:
+    def get_file_path(file_type: str, file_name: str, ignore_existence: bool) -> str:
         """
         This method is used to get the file path for a given file type and file name.
         If the ignore existance flag is set to True, it returns the file path even if the file does not exist.
@@ -172,18 +173,39 @@ class EnvironmentVars:
         Args:
             file_type (str): The type of the file (e.g., 'recipe', 'cookbook').
             file_name (str): The name of the file.
-            ignore_existance (bool): A flag indicating whether to return the file path
+            ignore_existence (bool): A flag indicating whether to return the file path
                              even if the file does not exist.
 
         Returns:
             str: The file path of the file.
         """
+        if Path(file_name).is_absolute():
+            logger.warning(f"Rejected absolute path in file name: {file_name}")
+            return ""
+
+        safe_file_name = sanitize_filename(file_name)
+        if not safe_file_name:
+            logger.warning(f"Rejected unsafe file name: {file_name}")
+            return ""
+
         for directory in EnvironmentVars.get_file_directory(file_type):
-            file_path = Path(directory) / file_name
-            if ignore_existance:
+            try:
+                base_dir = Path(directory).resolve()
+                file_path = (base_dir / safe_file_name).resolve()
+            except (FileNotFoundError, OSError) as e:
+                logger.warning(f"Skipping directory {directory}: {e}")
+                continue
+
+            try:
+                file_path.relative_to(base_dir)
+            except ValueError:
+                logger.warning(f"Skipping directory {directory}: Path traversal detected in file name")
+                continue
+
+            if ignore_existence:
                 return str(file_path)
             else:
-                if Path(file_path).exists():
+                if file_path.exists():
                     return str(file_path)
         return ""
 
