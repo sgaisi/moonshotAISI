@@ -8,7 +8,7 @@ version = "0.1.0"
 authors = [
     { name="SGAISI Moonshot", email="" }
 ]
-description = "AI Verify advances Gen AI testing with Project Moonshot."
+description = "SGAISI advances AI testing with MoonshotAISI."
 readme = "README.md"
 license = { text = "Apache-2.0" }
 requires-python = ">=3.11"
@@ -45,8 +45,8 @@ cli = [
     "rich>=13.8.0",
 ]
 all = [
-    "aiverify-moonshot[web-api]",
-    "aiverify-moonshot[cli]",
+    "sgaisi-moonshotAISI[web-api]",
+    "sgaisi-moonshotAISI[cli]",
 ]
 
 [tool.hatch.build.targets.sdist]
