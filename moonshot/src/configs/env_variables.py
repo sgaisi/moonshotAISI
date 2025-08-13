@@ -203,10 +203,10 @@ class EnvironmentVars:
                 continue
 
             if ignore_existence:
-                return str(file_path)
+                return str(Path(directory) / file_name)
             else:
                 if file_path.exists():
-                    return str(file_path)
+                    return str(Path(directory) / file_name)
         return ""
 
     @staticmethod
