@@ -142,7 +142,7 @@ class Bookmark:
             logger.error("Exception occurred while adding bookmark '%s': %s", bookmark.name, str(e), exc_info=True)
             return {
                 "success": False,
-                "message": BOOKMARK_ADD_BOOKMARK_ERROR.format(message=str(bookmark.name)),
+                "message": BOOKMARK_ADD_BOOKMARK_ERROR.format(message=BOOKMARK_ADD_BOOKMARK_VALIDATION_ERROR),
             }
 
     def get_all_bookmarks(self) -> list[dict]:
@@ -234,7 +234,11 @@ class Bookmark:
                 else:
                     return {"success": False, "message": BOOKMARK_DELETE_BOOKMARK_FAIL}
             except Exception as e:
-                logger.error("Exception occurred while deleting bookmark '%s': %s", bookmark_name, str(e), exc_info=True)
+                logger.error(
+                    "Exception occurred while deleting bookmark '%s': %s",
+                    bookmark_name, str(e),
+                    exc_info=True
+                )
                 return {
                     "success": False,
                     "message": BOOKMARK_DELETE_BOOKMARK_ERROR.format(message=str(bookmark_name)),
@@ -263,7 +267,7 @@ class Bookmark:
             logger.error("Exception occurred while deleting all bookmarks: %s", str(e), exc_info=True)
             return {
                 "success": False,
-                "message": BOOKMARK_DELETE_ALL_BOOKMARK_ERROR.format(message="Internal error"),
+                "message": BOOKMARK_DELETE_ALL_BOOKMARK_ERROR,
             }
 
     def export_bookmarks(self, export_file_name: str = "bookmarks") -> str:
