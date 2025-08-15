@@ -52,7 +52,7 @@ Once you have your connector endpoint, we can start choosing the test we want to
 
 3. Enter the example above to run a cookbook. You should see a table of results from your run:
         
-    ![cookbook run results](cli_images/cookbook_run.png)
+    ![cookbook run results](cli_images/agentic_cookbook_run.png)
 
 
 ### Running a Test Using Our Predefined Recipe
@@ -88,7 +88,7 @@ You can choose to run a recipe instead of a cookbook as well.
 
 3. Enter the example above to run a recipe. You should see a table of results from your run:
 
-    ![recipe run results](cli_images/recipe_run.png)
+    ![recipe run results](cli_images/agentic_recipe_run.png)
 
 
 ### Viewing of Agentic Results and Run Summary
@@ -98,19 +98,19 @@ After running a recipe or cookbook, you view the results and summary of the runs
 
         view_result agentic-cookbook-example
 
-![view result](cli_images/view_result.png)    
+![view result](cli_images/agentic_cookbook_run.png)    
 
 - View runner summary: In the examples above, we have created two runners `agentic-cookbook-example` and agentic-recipe-example`. You can view the summary of runs and sessions that we have done for the runner:
 
         view_runner agentic-cookbook-example
 
-![view runner](cli_images/view_runner.png)
+![view runner](cli_images/view_agentic_runner.png)
 
 - View the runs of a runner: Every runner can have multiple runs. In the example above, we did a run `agentic-cookbook-example`. You can view the all the runs in this runner (in this case you should see 1 run):
     
         view_run agentic-cookbook-example
 
-![view run](cli_images/view_run.png)
+![view run](cli_images/view_agentic_run.png)
 
 
 ### View Other Agentic Related Things
