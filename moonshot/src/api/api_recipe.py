@@ -17,6 +17,7 @@ def api_create_recipe(
     prompt_templates: list[str],
     metrics: list[str],
     grading_scale: dict[str, list[int]],
+    tools: list[str] = [],
 ) -> str:
     """
     Creates a new recipe with the given parameters.
@@ -35,10 +36,12 @@ def api_create_recipe(
         metrics (list[str]): A list of metrics to evaluate the recipe.
         grading_scale (dict[str, list[int]]): A grading scale dictionary where the key is the grade and the
         value is a list of integers representing the scale.
+        tools (list[str]): A list of tools used in the recipe.
 
     Returns:
         str: The ID of the newly created recipe.
     """
+
     rec_args = RecipeArguments(
         id="",
         name=name,
@@ -49,6 +52,7 @@ def api_create_recipe(
         prompt_templates=prompt_templates,
         metrics=metrics,
         grading_scale=grading_scale,
+        tools=tools,
     )
     return Recipe.create(rec_args)
 

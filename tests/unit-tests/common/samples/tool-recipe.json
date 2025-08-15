@@ -1,0 +1,19 @@
+{
+    "name": "tool-recipe",
+    "description": "My new Recipe!",
+    "tags": ["food"],
+    "categories": [
+        "fairness"
+    ],
+    "datasets": [
+        "arc-easy"
+    ],
+    "prompt_templates": [],
+    "metrics": [
+        "exactstrmatch"
+    ],
+    "tools": [
+        "tools-temp"
+    ],
+    "grading_scale": {}
+}
