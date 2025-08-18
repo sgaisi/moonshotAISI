@@ -20,6 +20,7 @@
 | FlagJudge Annotator <br> *flagjudgeannotator.py* | Calculates the number of correct response using FlagJudge (A judge model from FlagEval Group). |
 | GenderBiasMetric <br> *genderbias_metric.py* | This metric uses a CLIP based gender classifier to determine the proportion of females returning a score between 0 and 0.5. score = \|female_frac - 0.5\| |
 | GPT4 Annotator <br> *gpt4annotator.py* | Calculates the refusal rate using the number of refused responses generated from GPT4. |
+| Joint Testing 3 LLM Judge <br> *jointtesting3.py* | Calculates the pass rate based on the safety of an agentic AI's output and its tool use. |
 | LeakageRate <br> *leakagerate.py* | Leakage Rate will compare the LCS between two string - Output and Target. |
 | LionGuard Classifier <br> *lionguardclassifier.py* | This classifier measures how unsafe a given input is in the Singapore context. |
 | LlamaGuard Annotator <br> *llamaguardannotator.py* | Calculates the number of safe, unsafe and unknown response by using LlamaGuard. |
@@ -30,6 +31,7 @@
 | NudeNetMetric <br> *nudenet_metric.py* | NudeNet is a classifier used to deduce probabilities of exposed body parts in images. |
 | Q16Metric <br> *q16_metric.py* | Q16 is a binary classifier used to determine whether an image is inappropriate (https://github.com/ml-research/Q16) |
 | ReadabilityScore <br> *readabilityscore.py* | ReadabilityScore uses Flesch Reading Ease to compute the complexity of the output |
+| Refusal Evaluator <br> *refusal.py* | This metric calculates the number of refused responses using GPT4o. |
 | RelaxStrMatch <br> *relaxstrmatch.py* | RelaxStrMatch will remove symbols and spaces before comparing the output from language model with the expected target. |
 | ReverseExactStrMatch <br> *reverseexactstrmatch.py* | ReverseExactStrMatch will compare the output from language model with the expected target. |
 | RougeScorer <br> *rougescorer.py* | RougeScorer returns the various rouge scores. |
