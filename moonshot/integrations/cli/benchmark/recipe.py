@@ -58,6 +58,10 @@ from moonshot.integrations.cli.cli_errors import (
 from moonshot.integrations.cli.common.display_helper import display_view_list_format
 from moonshot.integrations.cli.utils.process_data import filter_data
 
+from moonshot.src.runners.runner_type import (
+    RunnerType
+)
+
 console = Console()
 
 
@@ -392,6 +396,9 @@ def run_recipe(args) -> None:
             and all(isinstance(item, str) for item in endpoints)
         ):
             raise TypeError(ERROR_BENCHMARK_RUN_RECIPE_ENDPOINTS_VALIDATION_1)
+        
+        runner_type = RunnerType.from_str(args.runner_proc_module)
+        # runner_type = RunnerType[args.runner_proc_module]
 
         # Run the recipes with the defined endpoints
         slugify_id = slugify(args.name, lowercase=True)
@@ -406,7 +413,7 @@ def run_recipe(args) -> None:
                 args.prompt_selection_percentage,
                 args.random_seed,
                 args.system_prompt,
-                args.runner_proc_module,
+                runner_type.to_module_name(),
                 args.result_proc_module,
             )
             await rec_runner.close()
@@ -861,7 +868,7 @@ run_recipe_args.add_argument(
     "--runner_proc_module",
     type=str,
     default="benchmarking",
-    help="Runner processing module to use",
+    help=f"Runner processing module to use. Available: {[e.value for e in RunnerType]}",
 )
 run_recipe_args.add_argument(
     "-o",

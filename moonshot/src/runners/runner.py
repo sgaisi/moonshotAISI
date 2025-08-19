@@ -346,10 +346,12 @@ class Runner:
         """
         async with self.current_operation_lock:  # Acquire the lock
             # Create new benchmark recipe test run
-            logger.info(f"[Runner] {self.id} - Running benchmark recipe run...")
+            # logger.info(f"[Runner] {self.id} - Running benchmark recipe run...")
+            logger.info(f"[Runner] {self.id} - Running recipe using {runner_processing_module} runner...")
             self.current_operation = Run(
                 self.id,
-                RunnerType.BENCHMARK,
+                # throws exception if provided runner name doesn't match with runner_type.py enum
+                RunnerType.from_str(runner_processing_module),
                 {
                     "recipes": recipes,
                     "prompt_selection_percentage": prompt_selection_percentage,
