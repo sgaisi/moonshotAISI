@@ -411,16 +411,17 @@ class Runner:
         """
         async with self.current_operation_lock:  # Acquire the lock
             # Create new benchmark cookbook test run
-            logger.info(f"[Runner] {self.id} - Running benchmark cookbook run...")
+            rt = RunnerType.from_str(runner_processing_module)
+            logger.info(f"[Runner] {self.id} - Running benchmark cookbook run using {rt.to_module_name()} runner...")
             self.current_operation = Run(
                 self.id,
-                RunnerType.BENCHMARK,
+                rt,
                 {
                     "cookbooks": cookbooks,
                     "prompt_selection_percentage": prompt_selection_percentage,
                     "random_seed": random_seed,
                     "system_prompt": system_prompt,
-                    "runner_processing_module": runner_processing_module,
+                    "runner_processing_module": rt.to_module_name(),
                     "result_processing_module": result_processing_module,
                 },
                 self.database_instance,

@@ -50,6 +50,7 @@ from moonshot.integrations.cli.cli_errors import (
 )
 from moonshot.integrations.cli.common.display_helper import display_view_list_format
 from moonshot.integrations.cli.utils.process_data import filter_data
+from moonshot.src.runners.runner_type import RunnerType
 
 console = Console()
 
@@ -305,13 +306,15 @@ def run_cookbook(args) -> None:
         else:
             cb_runner = api_create_runner(args.name, endpoints)
 
+        runner_module = RunnerType.from_str(args.runner_proc_module)
+
         async def run():
             await cb_runner.run_cookbooks(
                 cookbooks,
                 args.prompt_selection_percentage,
                 args.random_seed,
                 args.system_prompt,
-                args.runner_proc_module,
+                runner_module.to_module_name(),
                 args.result_proc_module,
             )
             await cb_runner.close()
