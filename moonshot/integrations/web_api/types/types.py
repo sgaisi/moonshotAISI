@@ -76,6 +76,11 @@ class BenchmarkCollectionType(Enum):
     RECIPE = "recipe"
 
 
+class AgenticCollectionType(Enum):
+    COOKBOOK = "cookbook"
+    RECIPE = "recipe"
+
+
 class ResultMetadata(TypedDict):
     id: str
     name: str

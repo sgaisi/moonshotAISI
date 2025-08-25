@@ -2,6 +2,9 @@ import importlib.resources
 
 from dependency_injector import containers, providers
 
+from .services.agentic_result_service import AgenticResultService
+from .services.agentic_service import AgenticService
+from .services.agentic_test_manager import AgenticTestManager
 from .services.attack_module_service import AttackModuleService
 from .services.auto_red_team_test_manager import AutoRedTeamTestManager
 from .services.auto_red_team_test_state import AutoRedTeamTestState
@@ -111,6 +114,19 @@ class Container(containers.DeclarativeContainer):
             BenchmarkingService, benchmark_test_manager=benchmark_test_manager
         )
     )
+    agentic_test_manager: providers.Singleton[AgenticTestManager] = (
+        providers.Singleton(
+            AgenticTestManager,
+            benchmark_test_state=benchmark_test_state,
+            progress_status_updater=webhook,
+            runner_service=runner_service,
+        )
+    )
+    agentic_service: providers.Singleton[AgenticService] = (
+        providers.Singleton(
+            AgenticService, agentic_test_manager=agentic_test_manager
+        )
+    )
     endpoint_service: providers.Singleton[EndpointService] = providers.Singleton(
         EndpointService
     )
@@ -122,6 +138,9 @@ class Container(containers.DeclarativeContainer):
     )
     benchmark_result_service: providers.Singleton[BenchmarkResultService] = (
         providers.Singleton(BenchmarkResultService)
+    )
+    agentic_result_service: providers.Singleton[AgenticResultService] = (
+        providers.Singleton(AgenticResultService)
     )
     metric_service: providers.Singleton[MetricService] = providers.Singleton(
         MetricService
@@ -138,6 +157,7 @@ class Container(containers.DeclarativeContainer):
     )
     wiring_config = containers.WiringConfiguration(
         modules=[
+            ".routes.agentic",
             ".routes.redteam",
             ".routes.prompt_template",
             ".routes.context_strategy",
@@ -151,6 +171,7 @@ class Container(containers.DeclarativeContainer):
             ".routes.dataset",
             ".routes.attack_modules",
             ".routes.bookmark",
+            ".services.agentic_service",
             ".services.benchmarking_service",
         ]
     )
