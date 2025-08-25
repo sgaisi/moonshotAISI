@@ -90,7 +90,7 @@ class AgenticTestManager(BaseService):
             input_data.run_name,
             input_data.endpoints,
             input_data.description,
-            self.progress_status_updater.on_progress_update,
+            self.progress_status_updater.on_agentic_progress_update,
         )
         agentic_coroutine = self.run_test(input_data, agentic_type, runner)
 
