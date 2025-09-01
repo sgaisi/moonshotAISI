@@ -141,7 +141,7 @@ def moonshot_data_installation(unattended: bool, overwrite: bool) -> None:
     """
     logger.info("Installing Moonshot Data from GitHub")
     repo = "https://github.com/sgaisi/moonshot-data-aisi.git"
-    branch = "dev_main"
+    branch = "main"
     folder_name = repo.split("/")[-1].replace(".git", "")
     do_install = True
 

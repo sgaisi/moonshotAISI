@@ -488,7 +488,7 @@ class TestCollectionBookmark:
                 "Bookmark A",
                 {
                     "success": False,
-                    "message": "[Bookmark] Failed to delete bookmark record: Deletion error",
+                    "message": "[Bookmark] Failed to delete bookmark record: Bookmark A",
                 },
                 True,
             ),
@@ -558,7 +558,7 @@ class TestCollectionBookmark:
                 Exception("Deletion error"),
                 {
                     "success": False,
-                    "message": "[Bookmark] Failed to delete all bookmark records: Deletion error",
+                    "message": "[Bookmark] Failed to delete all bookmark records.",
                 },
             ),
         ],

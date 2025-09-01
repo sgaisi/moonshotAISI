@@ -27,9 +27,7 @@ BOOKMARK_DELETE_BOOKMARK_ERROR_1 = "[Bookmark] Invalid bookmark name: {message}"
 # BOOKMARK - delete_all_bookmark
 # ------------------------------------------------------------------------------
 BOOKMARK_DELETE_ALL_BOOKMARK_SUCCESS = "[Bookmark] All bookmark records deleted."
-BOOKMARK_DELETE_ALL_BOOKMARK_ERROR = (
-    "[Bookmark] Failed to delete all bookmark records: {message}"
-)
+BOOKMARK_DELETE_ALL_BOOKMARK_ERROR = "[Bookmark] Failed to delete all bookmark records."
 
 # ------------------------------------------------------------------------------
 # BOOKMARK - export_bookmarks
