@@ -21,19 +21,19 @@ async def benchmark_executor(
     ),
 ) -> dict:
     """
-    Execute a benchmark test.
+    Execute a benchmark or agentic test (unified endpoint).
 
     Args:
-        type (BenchmarkCollectionType): The type of benchmark to execute.
-        data (BenchmarkRunnerDTO): The data required to execute the benchmark.
-        benchmarking_service (BenchmarkingService, optional): The service that will execute the benchmark.
+        type (BenchmarkCollectionType): The type of test to execute (COOKBOOK or RECIPE).
+        data (BenchmarkRunnerDTO): The data required to execute the test (works for both benchmark and agentic).
+        benchmarking_service (BenchmarkingService, optional): The unified service that handles both test types.
 
     Returns:
         dict: A dictionary with the 'id' key containing the ID of the created execution task.
 
     Raises:
         HTTPException: If the provided type is invalid (status code 400) or if the service fails to create
-        and execute the benchmark (status code 500).
+        and execute the test (status code 500).
     """
     try:
         if type is BenchmarkCollectionType.COOKBOOK:

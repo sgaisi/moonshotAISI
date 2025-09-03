@@ -56,6 +56,9 @@ class BenchmarkTestManager(BaseService):
         benchmark_type: BenchmarkCollectionType,
         moonshot_runner: Runner,
     ) -> None:
+        # Determine result processing module based on runner processing module
+        result_processing_module = "agentic-result" if benchmark_input_data.runner_processing_module == "agentic" else None
+        
         try:
             if benchmark_type == BenchmarkCollectionType.COOKBOOK:
                 async_run = moonshot_runner.run_cookbooks(
@@ -63,6 +66,8 @@ class BenchmarkTestManager(BaseService):
                     prompt_selection_percentage=benchmark_input_data.prompt_selection_percentage,
                     random_seed=benchmark_input_data.random_seed,
                     system_prompt=benchmark_input_data.system_prompt,
+                    runner_processing_module=benchmark_input_data.runner_processing_module,
+                    result_processing_module=result_processing_module,
                 )
             else:
                 async_run = moonshot_runner.run_recipes(
@@ -70,9 +75,11 @@ class BenchmarkTestManager(BaseService):
                     prompt_selection_percentage=benchmark_input_data.prompt_selection_percentage,
                     random_seed=benchmark_input_data.random_seed,
                     system_prompt=benchmark_input_data.system_prompt,
+                    runner_processing_module=benchmark_input_data.runner_processing_module,
+                    result_processing_module=result_processing_module,
                 )
         except Exception as e:
-            self.logger.error(f"Failed to execute benchmark - {e}")
+            self.logger.error(f"Failed to execute test - {e}")
             raise Exception(f"Unexpected error in core library - {e}")
 
         await async_run

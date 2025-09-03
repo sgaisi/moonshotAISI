@@ -11,7 +11,6 @@ from fastapi.responses import JSONResponse
 
 from .container import Container
 from .routes import (
-    agentic,
     attack_modules,
     benchmark,
     benchmark_result,
@@ -96,7 +95,6 @@ def create_app(cfg: providers.Configuration) -> CustomFastAPI:
     app.include_router(prompt_template.router)
     app.include_router(context_strategy.router)
     app.include_router(benchmark.router)
-    app.include_router(agentic.router)
     app.include_router(endpoint.router)
     app.include_router(recipe.router)
     app.include_router(cookbook.router)
