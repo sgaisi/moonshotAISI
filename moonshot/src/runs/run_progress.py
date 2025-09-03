@@ -85,21 +85,38 @@ class RunProgress:
             if hasattr(self.run_arguments, key):
                 setattr(self.run_arguments, key, value)
 
-        # Calculate percentage
-        if self.cookbook_total > 0:
-            if self.recipe_total > 0 and self.cookbook_index != self.cookbook_total:
-                # Calculate percentage with cookbook and recipe defined
-                per_recipe_percentage = (100 / self.cookbook_total) / self.recipe_total
-                self.progress = int(
-                    self.cookbook_index * (100 / self.cookbook_total)
-                ) + int(self.recipe_index * per_recipe_percentage)
+        # Calculate percentage - Fixed to handle completion properly
+        if hasattr(self, 'progress') and 'progress' in kwargs:
+            # If progress is explicitly set (e.g., to 100% for completion), use it directly
+            self.progress = kwargs['progress']
+        elif self.cookbook_total > 0:
+            if self.recipe_total > 0:
+                if self.cookbook_index >= self.cookbook_total and self.recipe_index >= self.recipe_total:
+                    # Both cookbook and recipe are at or beyond total - 100% complete
+                    self.progress = 100
+                elif self.cookbook_index >= self.cookbook_total:
+                    # Cookbook complete but recipe not - set to 100%
+                    self.progress = 100
+                else:
+                    # Calculate percentage with cookbook and recipe defined
+                    per_recipe_percentage = (100 / self.cookbook_total) / self.recipe_total
+                    cookbook_progress = self.cookbook_index * (100 / self.cookbook_total)
+                    recipe_progress = self.recipe_index * per_recipe_percentage
+                    self.progress = min(99, int(cookbook_progress + recipe_progress))
             else:
-                # Calculate percentage with cookbook defined and no recipes defined
-                # Or cookbook index and total is same.
-                self.progress = int(self.cookbook_index * (100 / self.cookbook_total))
+                if self.cookbook_index >= self.cookbook_total:
+                    # Cookbook complete - 100%
+                    self.progress = 100
+                else:
+                    # Calculate percentage with cookbook defined and no recipes defined
+                    self.progress = min(99, int(self.cookbook_index * (100 / self.cookbook_total)))
         elif self.recipe_total > 0:
-            # There is no cookbook, calculate for recipes defined
-            self.progress = int(self.recipe_index * (100 / self.recipe_total))
+            if self.recipe_index >= self.recipe_total:
+                # Recipe complete - 100%
+                self.progress = 100
+            else:
+                # There is no cookbook, calculate for recipes defined
+                self.progress = min(99, int(self.recipe_index * (100 / self.recipe_total)))
         else:
             # Initialization: set 0
             self.progress = 0

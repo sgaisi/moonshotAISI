@@ -192,6 +192,9 @@ class Run:
         Raises:
             RuntimeError: If any error occurs during the run process.
         """
+        updated_runner_results = None
+        has_errors = False
+
         # ------------------------------------------------------------------------------
         # Part 0: Initialise
         # ------------------------------------------------------------------------------
@@ -228,6 +231,7 @@ class Run:
                 f"[Run] Failed to initialise run in Part 0 due to error: {str(e)}"
             )
             self.run_progress.notify_error(error_message)
+            has_errors = True
 
         finally:
             logger.debug(
@@ -256,6 +260,7 @@ class Run:
             )
         except Exception as e:
             self.run_progress.notify_error(f"[Run] Module loading error: {e}")
+            has_errors = True
         finally:
             logger.debug(
                 f"[Run] Module loading took {(time.perf_counter() - start_time):.4f}s"
@@ -283,6 +288,7 @@ class Run:
         except Exception as e:
             error_message = f"[Run] Failed to run runner processing module in Part 3 due to error: {str(e)}"
             self.run_progress.notify_error(error_message)
+            has_errors = True
 
         finally:
             logger.debug(
@@ -294,9 +300,8 @@ class Run:
         # ------------------------------------------------------------------------------
         logger.debug("[Run] Part 4: Running result processing module...")
         start_time = time.perf_counter()
-        updated_runner_results = None
         try:
-            if result_module_instance:
+            if result_module_instance and runner_results:
                 updated_runner_results = result_module_instance.generate(  # type: ignore ; ducktyping
                     runner_results
                 )
@@ -304,12 +309,24 @@ class Run:
                     self.run_progress.notify_progress(
                         results=updated_runner_results.results
                     )
-            else:
-                raise RuntimeError("Failed to initialise result module instance.")
+                    logger.debug(f"[Run] Results successfully processed and saved to: {self.run_arguments.results_file}")
+                else:
+                    error_message = "[Run] Result processing module returned no results"
+                    self.run_progress.notify_error(error_message)
+                    has_errors = True
+            elif not result_module_instance:
+                error_message = "Failed to initialise result module instance."
+                self.run_progress.notify_error(error_message)
+                has_errors = True
+            elif not runner_results:
+                error_message = "No results from runner processing module to process."
+                self.run_progress.notify_error(error_message)
+                has_errors = True
 
         except Exception as e:
             error_message = f"[Run] Failed to run result processing module in Part 4 due to error: {str(e)}"
             self.run_progress.notify_error(error_message)
+            has_errors = True
 
         finally:
             logger.debug(
@@ -317,9 +334,62 @@ class Run:
             )
 
         # ------------------------------------------------------------------------------
-        # Part 5: Wrap up run
+        # Part 5: Wrap up run - CRITICAL FIX: Proper final status handling
         # ------------------------------------------------------------------------------
         logger.debug("[Run] Part 5: Wrap up run...")
+        start_time = time.perf_counter()
+        
+        try:
+            # Determine final status based on errors and results
+            if self.cancel_event.is_set():
+                final_status = RunStatus.CANCELLED
+                logger.info(f"[Run] {self.run_arguments.runner_id} - Run was cancelled")
+            elif has_errors or len(self.run_arguments.error_messages) > 0:
+                if updated_runner_results and updated_runner_results.results:
+                    final_status = RunStatus.COMPLETED_WITH_ERRORS
+                    logger.info(f"[Run] {self.run_arguments.runner_id} - Run completed with errors but has results")
+                else:
+                    final_status = RunStatus.FAILED
+                    logger.error(f"[Run] {self.run_arguments.runner_id} - Run failed with errors and no results")
+            elif updated_runner_results and updated_runner_results.results:
+                final_status = RunStatus.COMPLETED
+                logger.info(f"[Run] {self.run_arguments.runner_id} - Run completed successfully")
+            else:
+                final_status = RunStatus.FAILED
+                error_message = "[Run] Run completed but no results were generated"
+                self.run_progress.notify_error(error_message)
+                logger.error(f"[Run] {self.run_arguments.runner_id} - Run completed but no results generated")
+
+            # Set final progress to 100% and update status
+            final_progress_data = {
+                "status": final_status,
+                "progress": 100,
+                "cookbook_index": self.run_progress.cookbook_total,  # Set to total to reach 100%
+                "recipe_index": self.run_progress.recipe_total      # Set to total to reach 100%
+            }
+            
+            # Add raw results if available
+            if runner_results:
+                final_progress_data["raw_results"] = runner_results.raw_results if hasattr(runner_results, 'raw_results') else {}
+            
+            self.run_progress.notify_progress(**final_progress_data)
+            
+            # Log final status for debugging
+            logger.info(f"[Run] {self.run_arguments.runner_id} - Final status: {final_status.value}, Progress: 100%, Errors: {len(self.run_arguments.error_messages)}")
+            
+        except Exception as e:
+            error_message = f"[Run] Failed to wrap up run in Part 5 due to error: {str(e)}"
+            logger.error(error_message)
+            self.run_progress.notify_error(error_message)
+            # Ensure we still set a final status even if wrap-up fails
+            self.run_progress.notify_progress(status=RunStatus.FAILED, progress=100)
+            
+        finally:
+            logger.debug(
+                f"[Run] Wrap up run took {(time.perf_counter() - start_time):.4f}s"
+            )
+            logger.info(f"[Run] {self.run_arguments.runner_id} - Run execution completed")
+
         return updated_runner_results
 
     def _load_module(self, arg_key: str, env_var: str):

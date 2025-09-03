@@ -48,7 +48,18 @@ class BenchmarkTestManager(BaseService):
         self.benchmark_test_state.update_progress_status(updates)
 
     def on_task_completed(self, task: asyncio.Task[Any]) -> None:
-        self.logger.debug(f"Task {task.get_name()} has completed")
+        """
+        Enhanced completion handler with better error reporting and status updates.
+        """
+        task_name = task.get_name()
+        
+        if task.exception():
+            self.logger.error(f"Task {task_name} completed with exception: {task.exception()}")
+        else:
+            self.logger.info(f"Task {task_name} completed successfully")
+        
+        # Clean up the task from our tracking
+        # Note: The actual cleanup happens in the task completion callback in schedule_test_task
 
     async def run_test(
         self,
@@ -56,11 +67,18 @@ class BenchmarkTestManager(BaseService):
         benchmark_type: BenchmarkCollectionType,
         moonshot_runner: Runner,
     ) -> None:
+        """
+        Enhanced run_test method with better error handling and result validation.
+        """
         # Determine result processing module based on runner processing module
-        result_processing_module = "agentic-result" if benchmark_input_data.runner_processing_module == "agentic" else None
+        result_processing_module = "agentic-result" if benchmark_input_data.runner_processing_module == "agentic" else "benchmarking-result"
+        
+        self.logger.info(f"Starting {benchmark_type.value} test for runner {moonshot_runner.id}")
+        self.logger.debug(f"Test parameters: processing_module={benchmark_input_data.runner_processing_module}, result_module={result_processing_module}")
         
         try:
             if benchmark_type == BenchmarkCollectionType.COOKBOOK:
+                self.logger.debug(f"Running cookbooks: {benchmark_input_data.inputs}")
                 async_run = moonshot_runner.run_cookbooks(
                     cookbooks=benchmark_input_data.inputs,
                     prompt_selection_percentage=benchmark_input_data.prompt_selection_percentage,
@@ -70,6 +88,7 @@ class BenchmarkTestManager(BaseService):
                     result_processing_module=result_processing_module,
                 )
             else:
+                self.logger.debug(f"Running recipes: {benchmark_input_data.inputs}")
                 async_run = moonshot_runner.run_recipes(
                     recipes=benchmark_input_data.inputs,
                     prompt_selection_percentage=benchmark_input_data.prompt_selection_percentage,
@@ -78,12 +97,22 @@ class BenchmarkTestManager(BaseService):
                     runner_processing_module=benchmark_input_data.runner_processing_module,
                     result_processing_module=result_processing_module,
                 )
+            
+            self.logger.debug(f"Executing async run for runner {moonshot_runner.id}")
+            await async_run
+            self.logger.info(f"Async run completed for runner {moonshot_runner.id}")
+            
         except Exception as e:
-            self.logger.error(f"Failed to execute test - {e}")
+            error_msg = f"Failed to execute {benchmark_type.value} test for runner {moonshot_runner.id} - {e}"
+            self.logger.error(error_msg)
             raise Exception(f"Unexpected error in core library - {e}")
-
-        await async_run
-        async_run.close()
+        
+        finally:
+            try:
+                await async_run.close()
+                self.logger.debug(f"Runner {moonshot_runner.id} resources cleaned up")
+            except Exception as e:
+                self.logger.warning(f"Error during cleanup for runner {moonshot_runner.id}: {e}")
 
     async def schedule_test_task(
         self, input_data: BenchmarkRunnerDTO, benchmark_type: BenchmarkCollectionType
