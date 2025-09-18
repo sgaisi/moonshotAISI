@@ -66,9 +66,9 @@ jobs:
     
     - name: Setup Moonshot
       run: |
-        python -m venv venv
-        source venv/bin/activate
-        pip install -r requirements.txt
+        pip install uv==0.8.15
+        uv venv
+        source .venv/bin/activate
         touch .env
         echo "${{ secrets.ENVIRONMENT_VARS }}" >> .env
 
@@ -90,9 +90,8 @@ jobs:
 
     - name: Setup Moonshot Data
       run: |
-        source venv/bin/activate
-        cd moonshot-data-aisi
-        pip install -r requirements.txt
+        source .venv/bin/activate
+        uv sync --all-packages --inexact
 
     - name: Checkout Moonshot UI (Pull Request Review)
       if: github.event_name == 'pull_request_review'
@@ -113,13 +112,13 @@ jobs:
      # Download NLTK stopwords
     - name: Download NLTK stopwords
       run: |
-        source venv/bin/activate
+        source .venv/bin/activate
         pip install nltk
         python -c "import nltk; nltk.download('stopwords');nltk.download('punkt');nltk.download('punkt_tab');nltk.download('averaged_perceptron_tagger_eng')"
     
     - name: Setup Moonshot UI
       run: |
-        source venv/bin/activate
+        source .venv/bin/activate
         cd moonshot-ui-aisi
         npm install
         npm run build
@@ -147,7 +146,7 @@ jobs:
         GOOGLE_TOKEN: ${{ secrets.GOOGLE_TOKEN }}
       id: integrationuitest
       run: |
-         source venv/bin/activate
+         source .venv/bin/activate
          cd moonshot-integration-testing-aisi/ui-integration-testing
          npm ci
          npx playwright install
@@ -214,9 +213,9 @@ jobs:
     
     - name: Setup Moonshot
       run: |
-        python -m venv venv
-        source venv/bin/activate
-        pip install -r requirements.txt
+        pip install uv==0.8.15
+        uv venv
+        source .venv/bin/activate
         touch .env
         echo "${{ secrets.ENVIRONMENT_VARS }}" >> .env
 
@@ -238,9 +237,8 @@ jobs:
 
     - name: Setup Moonshot Data
       run: |
-        source venv/bin/activate
-        cd moonshot-data-aisi
-        pip install -r requirements.txt
+        source .venv/bin/activate
+        uv sync --all-packages --inexact
 
     - name: Checkout Moonshot UI (Pull Request Review)
       if: github.event_name == 'pull_request_review'
@@ -261,13 +259,13 @@ jobs:
      # Download NLTK stopwords
     - name: Download NLTK stopwords
       run: |
-        source venv/bin/activate
+        source .venv/bin/activate
         pip install nltk
         python -c "import nltk; nltk.download('stopwords');nltk.download('punkt');nltk.download('punkt_tab');nltk.download('averaged_perceptron_tagger_eng')"
     
     - name: Setup Moonshot UI
       run: |
-        source venv/bin/activate
+        source .venv/bin/activate
         cd moonshot-ui-aisi
         npm install
         npm run build
@@ -295,7 +293,7 @@ jobs:
         GOOGLE_TOKEN: ${{ secrets.GOOGLE_TOKEN }}
       id: integrationuitest
       run: |
-         source venv/bin/activate
+         source .venv/bin/activate
          cd moonshot-integration-testing-aisi/ui-integration-testing
          npm ci
          npx playwright install
@@ -362,9 +360,9 @@ jobs:
     
     - name: Setup Moonshot
       run: |
-        python -m venv venv
-        source venv/bin/activate
-        pip install -r requirements.txt
+        pip install uv==0.8.15
+        uv venv
+        source .venv/bin/activate
         touch .env
         echo "${{ secrets.ENVIRONMENT_VARS }}" >> .env
 
@@ -386,9 +384,8 @@ jobs:
 
     - name: Setup Moonshot Data
       run: |
-        source venv/bin/activate
-        cd moonshot-data-aisi
-        pip install -r requirements.txt
+        source .venv/bin/activate
+        uv sync --all-packages --inexact
 
     - name: Checkout Moonshot UI (Pull Request Review)
       if: github.event_name == 'pull_request_review'
@@ -409,13 +406,13 @@ jobs:
      # Download NLTK stopwords
     - name: Download NLTK stopwords
       run: |
-        source venv/bin/activate
+        source .venv/bin/activate
         pip install nltk
         python -c "import nltk; nltk.download('stopwords');nltk.download('punkt');nltk.download('punkt_tab');nltk.download('averaged_perceptron_tagger_eng')"
     
     - name: Setup Moonshot UI
       run: |
-        source venv/bin/activate
+        source .venv/bin/activate
         cd moonshot-ui-aisi
         npm install
         npm run build
@@ -443,7 +440,7 @@ jobs:
         GOOGLE_TOKEN: ${{ secrets.GOOGLE_TOKEN }}
       id: integrationuitest
       run: |
-         source venv/bin/activate
+         source .venv/bin/activate
          cd moonshot-integration-testing-aisi/ui-integration-testing
          npm ci
          npx playwright install
@@ -511,9 +508,9 @@ jobs:
     
     - name: Setup Moonshot
       run: |
-        python -m venv venv
-        source venv/bin/activate
-        pip install -r requirements.txt
+        pip install uv==0.8.15
+        uv venv
+        source .venv/bin/activate
         touch .env
         echo "${{ secrets.ENVIRONMENT_VARS }}" >> .env
 
@@ -535,9 +532,8 @@ jobs:
 
     - name: Setup Moonshot Data
       run: |
-        source venv/bin/activate
-        cd moonshot-data-aisi
-        pip install -r requirements.txt
+        source .venv/bin/activate
+        uv sync --all-packages --inexact
 
     - name: Checkout Moonshot UI (Pull Request Review)
       if: github.event_name == 'pull_request_review'
@@ -558,13 +554,13 @@ jobs:
      # Download NLTK stopwords
     - name: Download NLTK stopwords
       run: |
-        source venv/bin/activate
+        source .venv/bin/activate
         pip install nltk
         python -c "import nltk; nltk.download('stopwords');nltk.download('punkt');nltk.download('punkt_tab');nltk.download('averaged_perceptron_tagger_eng')"
     
     - name: Setup Moonshot UI
       run: |
-        source venv/bin/activate
+        source .venv/bin/activate
         cd moonshot-ui-aisi
         npm install
         npm run build
@@ -592,7 +588,7 @@ jobs:
         GOOGLE_TOKEN: ${{ secrets.GOOGLE_TOKEN }}
       id: integrationuitest
       run: |
-         source venv/bin/activate
+         source .venv/bin/activate
          cd moonshot-integration-testing-aisi/ui-integration-testing
          npm ci
          npx playwright install
@@ -641,9 +637,9 @@ jobs:
     
     - name: Setup Moonshot
       run: |
-        python -m venv venv
-        source venv/bin/activate
-        pip install -r requirements.txt
+        pip install uv==0.8.15
+        uv venv
+        source .venv/bin/activate
         touch .env
         echo "${{ secrets.ENVIRONMENT_VARS }}" >> .env
 
@@ -665,9 +661,8 @@ jobs:
 
     - name: Setup Moonshot Data
       run: |
-        source venv/bin/activate
-        cd moonshot-data-aisi
-        pip install -r requirements.txt
+        source .venv/bin/activate
+        uv sync --all-packages --inexact
 
     - name: Checkout Moonshot UI (Pull Request Review)
       if: github.event_name == 'pull_request_review'
@@ -688,13 +683,13 @@ jobs:
      # Download NLTK stopwords
     - name: Download NLTK stopwords
       run: |
-        source venv/bin/activate
+        source .venv/bin/activate
         pip install nltk
         python -c "import nltk; nltk.download('stopwords');nltk.download('punkt');nltk.download('punkt_tab');nltk.download('averaged_perceptron_tagger_eng')"
     
     - name: Setup Moonshot UI
       run: |
-        source venv/bin/activate
+        source .venv/bin/activate
         cd moonshot-ui-aisi
         npm install
         npm run build
@@ -722,7 +717,7 @@ jobs:
         GOOGLE_TOKEN: ${{ secrets.GOOGLE_TOKEN }}
       id: integrationuitest
       run: |
-         source venv/bin/activate
+         source .venv/bin/activate
          cd moonshot-integration-testing-aisi/ui-integration-testing
          npm ci
          npx playwright install
@@ -788,9 +783,9 @@ jobs:
     
     - name: Setup Moonshot
       run: |
-        python -m venv venv
-        source venv/bin/activate
-        pip install -r requirements.txt
+        pip install uv==0.8.15
+        uv venv
+        source .venv/bin/activate
         touch .env
         echo "${{ secrets.ENVIRONMENT_VARS }}" >> .env
 
@@ -812,9 +807,8 @@ jobs:
 
     - name: Setup Moonshot Data
       run: |
-        source venv/bin/activate
-        cd moonshot-data-aisi
-        pip install -r requirements.txt
+        source .venv/bin/activate
+        uv sync --all-packages --inexact
 
     - name: Checkout Moonshot UI (Pull Request Review)
       if: github.event_name == 'pull_request_review'
@@ -835,13 +829,13 @@ jobs:
      # Download NLTK stopwords
     - name: Download NLTK stopwords
       run: |
-        source venv/bin/activate
+        source .venv/bin/activate
         pip install nltk
         python -c "import nltk; nltk.download('stopwords');nltk.download('punkt');nltk.download('punkt_tab');nltk.download('averaged_perceptron_tagger_eng')"
     
     - name: Setup Moonshot UI
       run: |
-        source venv/bin/activate
+        source .venv/bin/activate
         cd moonshot-ui-aisi
         npm install
         npm run build
@@ -869,7 +863,7 @@ jobs:
         ACTIONS_STEP_DEBUG: true
         ACTIONS_RUNNER_DEBUG: true
       run: |
-         source venv/bin/activate
+         source .venv/bin/activate
          cd moonshot-integration-testing-aisi/cli-integration-testing
          echo "Current Directory: $(pwd)"
          pip install python-dotenv

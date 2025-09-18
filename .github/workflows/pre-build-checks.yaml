@@ -21,11 +21,19 @@ on:
         required: true
         default: 'dev_main'
         type: string
+      data_branch_to_test:
+        description: 'Data branch or tag to run test'
+        required: false
+        default: 'dev_main'
+        type: string
 
 # Allow one concurrent deployment
 concurrency:
   group: ${{ github.repository }}-${{ github.workflow }}
   cancel-in-progress: true
+
+env:
+  UV_SYSTEM_PYTHON: 1
 
 jobs:
 
@@ -49,7 +57,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         run: |
           echo "MS_BRANCH=${{ inputs.branch_to_test }}" >> "$GITHUB_ENV"
-          echo "MS_DATA_BRANCH=dev_main" >> "$GITHUB_ENV"
+          echo "MS_DATA_BRANCH=${{ inputs.data_branch_to_test }}" >> "$GITHUB_ENV"
           echo "PR_NUM=#0" >> "$GITHUB_ENV"
           echo "${{ inputs.branch_to_test }}"
 
@@ -60,49 +68,53 @@ jobs:
           ref: ${{ env.MS_BRANCH }}
           submodules: recursive
 
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.8.15"
+
       - name: Setup python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       # Checkout moonshot-data code
-      - name: Checkout code (moonshot-data)
+      - name: Checkout code (moonshot-data-aisi)
         uses: actions/checkout@v3
         with:
           repository: sgaisi/moonshot-data-aisi
           ref: ${{ env.MS_DATA_BRANCH }}
           submodules: recursive
-          path: moonshot-data
+          path: moonshot-data-aisi
 
       # Install dependencies
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
-          pip install -r moonshot-data/requirements.txt
-          pip install pytest pytest-asyncio pytest-mock pytest-html pytest-json pytest-cov coverage httpx anybadge
-          pip install flake8 flake8-html
+          uv venv
+          source .venv/bin/activate
+          uv sync --all-packages --inexact --dev
 
       # Setup .env file
       - name: Setup env file
         run: |
           echo "# For Data
-          ATTACK_MODULES=\"./moonshot-data/attack-modules\"
-          BOOKMARKS=\"./moonshot-data/generated-outputs/bookmarks\"
-          CONNECTORS=\"./moonshot-data/connectors\"
-          CONNECTORS_ENDPOINTS=\"./moonshot-data/connectors-endpoints\"
-          CONTEXT_STRATEGY=\"./moonshot-data/context-strategy\"
-          COOKBOOKS=\"./moonshot-data/cookbooks\"
-          DATABASES=\"./moonshot-data/generated-outputs/databases\"
-          DATABASES_MODULES=\"./moonshot-data/databases-modules\"
-          DATASETS=\"./moonshot-data/datasets\"
-          IO_MODULES=\"./moonshot-data/io-modules\"
-          METRICS=\"./moonshot-data/metrics\"
-          PROMPT_TEMPLATES=\"./moonshot-data/prompt-templates\"
-          RECIPES=\"./moonshot-data/recipes\"
-          RESULTS=\"./moonshot-data/generated-outputs/results\"
-          RESULTS_MODULES=\"./moonshot-data/results-modules\"
-          RUNNERS=\"./moonshot-data/generated-outputs/runners\"
-          RUNNERS_MODULES=\"./moonshot-data/runners-modules\"
+          ATTACK_MODULES=\"./moonshot-data-aisi/attack-modules\"
+          BOOKMARKS=\"./moonshot-data-aisi/generated-outputs/bookmarks\"
+          CONNECTORS=\"./moonshot-data-aisi/connectors\"
+          CONNECTORS_ENDPOINTS=\"./moonshot-data-aisi/connectors-endpoints\"
+          CONTEXT_STRATEGY=\"./moonshot-data-aisi/context-strategy\"
+          COOKBOOKS=\"./moonshot-data-aisi/cookbooks\"
+          DATABASES=\"./moonshot-data-aisi/generated-outputs/databases\"
+          DATABASES_MODULES=\"./moonshot-data-aisi/databases-modules\"
+          DATASETS=\"./moonshot-data-aisi/datasets\"
+          IO_MODULES=\"./moonshot-data-aisi/io-modules\"
+          METRICS=\"./moonshot-data-aisi/metrics\"
+          PROMPT_TEMPLATES=\"./moonshot-data-aisi/prompt-templates\"
+          RECIPES=\"./moonshot-data-aisi/recipes\"
+          RESULTS=\"./moonshot-data-aisi/generated-outputs/results\"
+          RESULTS_MODULES=\"./moonshot-data-aisi/results-modules\"
+          RUNNERS=\"./moonshot-data-aisi/generated-outputs/runners\"
+          RUNNERS_MODULES=\"./moonshot-data-aisi/runners-modules\"
           TOKENIZERS_PARALLELISM=false
           
           # For Web API
@@ -117,6 +129,7 @@ jobs:
         timeout-minutes: 30
         run: |
           set +e
+          source .venv/bin/activate
           bash ci/run-test.sh
           source ci/gen_pre_build_summ.sh test
           test_status=$?
@@ -135,6 +148,7 @@ jobs:
         if: ${{ ! cancelled() }}
         run: |
           set +e
+          source .venv/bin/activate
           bash ci/run-flake8.sh
           source ci/gen_pre_build_summ.sh lint
           lint_status=$?
@@ -148,6 +162,7 @@ jobs:
         if: ${{ ! cancelled() }}
         run: |
           set +e
+          source .venv/bin/activate
           bash ci/run-pip-audit.sh
           source ci/gen_pre_build_summ.sh dependency
           dep_status=$?

@@ -124,7 +124,7 @@ def download_spacy_model() -> None:
     """
     Downloads the en_core_web_lg model using the spacy module (for entity processor module).
     """
-    subprocess.run(["python", "-m", "spacy", "download", "en_core_web_lg"])
+    subprocess.run([sys.executable, "-m", "spacy", "download", "en_core_web_lg"], check=True)
 
 
 def moonshot_data_installation(unattended: bool, overwrite: bool) -> None:
@@ -179,18 +179,10 @@ def moonshot_data_installation(unattended: bool, overwrite: bool) -> None:
         # Create .env to point to installed folder
         ms_lib_env_file(folder_name)
 
-    # Change directory to the folder
-    os.chdir(folder_name)
-
     logger.info(f"Installing requirements for {folder_name}")
-    # Install the requirements if they exist
-    if os.path.exists("requirements.txt"):
-        run_subprocess(["pip", "install", "-r", "requirements.txt"], check=True)
-        download_nltk_resources()
-        download_spacy_model()
-
-    # Change back to the base directory
-    os.chdir("..")
+    run_subprocess(["uv", "sync", "--inexact", "--all-packages"], check=True)
+    download_nltk_resources()
+    download_spacy_model()
 
 
 def check_node() -> bool:

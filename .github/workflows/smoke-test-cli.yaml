@@ -68,9 +68,9 @@ jobs:
     
     - name: Setup Moonshot
       run: |
-        python -m venv venv
-        source venv/bin/activate
-        pip install -r requirements.txt
+        pip install uv==0.8.15
+        uv venv
+        source .venv/bin/activate
         touch .env
         echo "${{ secrets.ENVIRONMENT_VARS }}" >> .env
 
@@ -92,9 +92,8 @@ jobs:
 
     - name: Setup Moonshot Data
       run: |
-        source venv/bin/activate
-        cd moonshot-data-aisi
-        pip install -r requirements.txt
+        source .venv/bin/activate
+        uv sync --all-packages --inexact
 
     - name: Checkout Moonshot UI (Pull Request Review)
       if: github.event_name == 'pull_request'
@@ -135,7 +134,7 @@ jobs:
         MOONSHOT_PORT_NUMBER: ${{ secrets.MOONSHOT_PORT_NUMBER }}
         CLI_DIR: ${{ secrets.CLI_DIR }}
       run: |
-         source venv/bin/activate
+         source .venv/bin/activate
          cd moonshot-smoke-testing-aisi
          cd tests
          pip install python-dotenv

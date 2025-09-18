@@ -1,28 +1,23 @@
 #!/bin/bash
 
-# create venv for ci
-python3 -m venv ci-venv
-source ci-venv/bin/activate
-
-pip install --upgrade pip > /dev/null
-
 # install dependencies
-pip install -r requirements.txt > /dev/null
+source .venv/bin/activate
+uv sync --all-packages --inexact > /dev/null
 
 # license check
 echo "License check..."
-pip install pip-licenses > /dev/null
-pip-licenses --format markdown --output-file licenses-found.md > /dev/null
-pip uninstall pip-licenses prettytable wcwidth -y > /dev/null
+uv pip install pip-licenses > /dev/null
+uv run pip-licenses --format markdown --output-file licenses-found.md > /dev/null
+uv pip uninstall pip-licenses prettytable wcwidth > /dev/null
 
 # dependency check
 echo "Dependency check..."
-pip install pip-audit > /dev/null
-pip uninstall setuptools -y > /dev/null
+uv pip install pip-audit > /dev/null
+uv pip uninstall setuptools > /dev/null
 set +e
-pip-audit --format markdown --desc on -o pip-audit-report.md &> pip-audit-count.txt
+uv run pip-audit --format markdown --desc on -o pip-audit-report.md &> pip-audit-count.txt
 exit_code=$?
-pip install mdtree > /dev/null
+uv pip install mdtree > /dev/null
 
 if [ -f pip-audit-report.md ]; then
   echo "============ Vulnerabilities Found ============"
