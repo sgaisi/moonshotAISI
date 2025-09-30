@@ -85,11 +85,8 @@ class RunProgress:
             if hasattr(self.run_arguments, key):
                 setattr(self.run_arguments, key, value)
 
-        # Calculate percentage - Fixed to handle completion properly
-        if hasattr(self, 'progress') and 'progress' in kwargs:
-            # If progress is explicitly set (e.g., to 100% for completion), use it directly
-            self.progress = kwargs['progress']
-        elif self.cookbook_total > 0:
+        # Calculate percentage
+        if self.cookbook_total > 0:
             if self.recipe_total > 0:
                 if self.cookbook_index >= self.cookbook_total and self.recipe_index >= self.recipe_total:
                     # Both cookbook and recipe are at or beyond total - 100% complete
