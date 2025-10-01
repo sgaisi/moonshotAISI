@@ -128,11 +128,8 @@ jobs:
 
     - name: Run Smoke Test
       env: 
-        AZURE_OPENAI_URI: ${{ secrets.AZURE_OPENAI_URI }}
-        AZURE_OPENAI_TOKEN: ${{ secrets.AZURE_OPENAI_TOKEN }}
-        ADDITIONAL_PARAMETERS: ${{ secrets.ADDITIONAL_PARAMETERS }}
-        MOONSHOT_URL: ${{ secrets.MOONSHOT_URL }}
-        MOONSHOT_PORT_NUMBER: ${{ secrets.MOONSHOT_PORT_NUMBER }}
+        OPENAI_URI: ${{ secrets.OPENAI_URI }}
+        OPENAI_TOKEN: ${{ secrets.OPENAI_TOKEN }}
         CLI_DIR: ${{ secrets.CLI_DIR }}
       run: |
          source venv/bin/activate
