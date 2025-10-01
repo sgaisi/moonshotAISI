@@ -30,7 +30,7 @@ then
 fi
 
 # Fetch CodeQL alerts
-gh api -X GET "repos/$REPO/code-scanning/alerts" > "$OUTPUT_FILE"
+gh api -X GET "repos/$REPO/code-scanning/alerts?state=open" > "$OUTPUT_FILE"
 if [ $? -ne 0 ]; then
   OUTPUT_MESSAGES+="Failed to fetch CodeQL alerts.\n"
   return 1
