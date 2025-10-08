@@ -42,7 +42,7 @@ jobs:
       - name: Setup python 3.11
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "~=3.11.4"
 
       # Install dependencies
       - name: Install mkdocs

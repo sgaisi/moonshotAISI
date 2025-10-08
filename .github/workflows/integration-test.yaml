@@ -62,7 +62,7 @@ jobs:
     - name: Setup Python 3.11
       uses: actions/setup-python@v4
       with:
-          python-version: '3.11'
+          python-version: "~=3.11.4"
     
     - name: Setup Moonshot
       run: |
@@ -210,7 +210,7 @@ jobs:
     - name: Setup Python 3.11
       uses: actions/setup-python@v4
       with:
-          python-version: '3.11'
+          python-version: "~=3.11.4"
     
     - name: Setup Moonshot
       run: |
@@ -358,7 +358,7 @@ jobs:
     - name: Setup Python 3.11
       uses: actions/setup-python@v4
       with:
-          python-version: '3.11'
+          python-version: "~=3.11.4"
     
     - name: Setup Moonshot
       run: |
@@ -507,7 +507,7 @@ jobs:
     - name: Setup Python 3.11
       uses: actions/setup-python@v4
       with:
-          python-version: '3.11'
+          python-version: "~=3.11.4"
     
     - name: Setup Moonshot
       run: |
@@ -637,7 +637,7 @@ jobs:
     - name: Setup Python 3.11
       uses: actions/setup-python@v4
       with:
-          python-version: '3.11'
+          python-version: "~=3.11.4"
     
     - name: Setup Moonshot
       run: |
@@ -784,7 +784,7 @@ jobs:
     - name: Setup Python 3.11
       uses: actions/setup-python@v4
       with:
-          python-version: '3.11'
+          python-version: "~=3.11.4"
     
     - name: Setup Moonshot
       run: |

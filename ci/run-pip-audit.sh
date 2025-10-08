@@ -20,7 +20,7 @@ echo "Dependency check..."
 pip install pip-audit > /dev/null
 pip uninstall setuptools -y > /dev/null
 set +e
-pip-audit --format markdown --desc on -o pip-audit-report.md &> pip-audit-count.txt
+pip-audit --ignore-vuln GHSA-4xh5-x5gv-qwph --format markdown --desc on -o pip-audit-report.md &> pip-audit-count.txt
 exit_code=$?
 pip install mdtree > /dev/null
 

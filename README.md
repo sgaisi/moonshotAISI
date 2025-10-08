@@ -8,7 +8,7 @@
 
 A simple and modular tool to evaluate any LLM application.
 
-[![Python 3.11](https://img.shields.io/badge/python-3.11-green)](https://www.python.org/downloads/release/python-3111/)
+[![Python 3.11.13](https://img.shields.io/badge/python-3.11.13-green)](https://www.python.org/downloads/release/python-31113/)
 
 
 </div>
@@ -28,7 +28,7 @@ In this initial version, Moonshot can be used through several interfaces:
 </br>
 
 ### ✅ Prerequisites
-1. [Python 3.11](https://www.python.org/downloads/release/python-3111/) (We have yet to test on later releases)
+1. [Python >=3.11.4, < 3.12](https://www.python.org/downloads/release/python-31113/) (We have yet to test on later releases)
 
 2. [Git](https://github.com/git-guides/install-git)
 
