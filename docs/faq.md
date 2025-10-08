@@ -19,7 +19,7 @@ Here are the requirements. You can also find this table in our [quick install pa
 
  | Software                                                                           | Version Requirement |
 | ---------------------------------------------------------------------------------- | ------------------- |
-| [Python](https://www.python.org/downloads/)                                        | v3.11               |
+| [Python](https://www.python.org/downloads/)                                        | >=v3.11.4 , <v3.12               |
 | [NodeJs](https://nodejs.org/en/download)                                           | v20.11.1 LTS or above               |
 | npm                                        | v10.8.0 or above               |
 | git       
