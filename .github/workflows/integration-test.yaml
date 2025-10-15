@@ -354,7 +354,18 @@ jobs:
       with:
           repository: sgaisi/moonshotAISI
           ref: ${{ inputs.moonshot_branch }}
-          
+
+    - name: Clean workspace
+      run: |
+        df -h
+        sudo rm -rf /tmp/* /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+        sudo docker image prune -af || true
+        sudo docker system prune -af || true
+        sudo docker builder prune -a || true
+        sudo apt-get clean
+        sudo apt-get autoremove -y
+        df -h
+
     - name: Setup Python 3.11
       uses: actions/setup-python@v4
       with:
@@ -503,7 +514,18 @@ jobs:
       with:
           repository: sgaisi/moonshotAISI
           ref: ${{ inputs.moonshot_branch }}
-          
+
+    - name: Clean workspace
+      run: |
+        df -h
+        sudo rm -rf /tmp/* /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+        sudo docker image prune -af || true
+        sudo docker system prune -af || true
+        sudo docker builder prune -a || true
+        sudo apt-get clean
+        sudo apt-get autoremove -y
+        df -h
+
     - name: Setup Python 3.11
       uses: actions/setup-python@v4
       with:
@@ -613,7 +635,7 @@ jobs:
     #         /home/runner/work/moonshotAISI/moonshotAISI/moonshot-integration-testing-aisi/ui-integration-testing/test-results
 
 ##########################################################################################################################################################################
-  integration-ui-test-red-teaming:
+  integration-ui-test-benchmarking-3:
 
     runs-on: ubuntu-latest
     timeout-minutes: 300
@@ -633,7 +655,18 @@ jobs:
       with:
           repository: sgaisi/moonshotAISI
           ref: ${{ inputs.moonshot_branch }}
-          
+
+    - name: Clean workspace
+      run: |
+        df -h
+        sudo rm -rf /tmp/* /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+        sudo docker image prune -af || true
+        sudo docker system prune -af || true
+        sudo docker builder prune -a || true
+        sudo apt-get clean
+        sudo apt-get autoremove -y
+        df -h
+
     - name: Setup Python 3.11
       uses: actions/setup-python@v4
       with:
@@ -691,6 +724,147 @@ jobs:
         source venv/bin/activate
         pip install nltk
         python -c "import nltk; nltk.download('stopwords');nltk.download('punkt');nltk.download('punkt_tab');nltk.download('averaged_perceptron_tagger_eng')"
+    
+    - name: Setup Moonshot UI
+      run: |
+        source venv/bin/activate
+        cd moonshot-ui-aisi
+        npm install
+        npm run build
+        cd ../
+        nohup python -m moonshot web &
+
+    - name: Checkout Integration Test
+      uses: actions/checkout@v4
+      with:
+          repository: sgaisi/moonshot-integration-testing-aisi
+          ref: ${{ inputs.moonshot_integration_testing_branch }}
+          path: moonshot-integration-testing-aisi
+    
+    - name: Run Integration UI Test 3
+      env: 
+        URI: ${{ secrets.URI }}
+        TOKEN: ${{ secrets.TOKEN }}
+        URI2: ${{ secrets.URI2 }}
+        TOKEN2: ${{ secrets.TOKEN2 }}
+        ADDITIONAL_PARAMETERS: ${{ secrets.ADDITIONAL_PARAMETERS }}
+        TOGETHER_TOKEN: ${{ secrets.TOGETHER_TOKEN }}
+        OPENAI_TOKEN: ${{ secrets.OPENAI_TOKEN }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        GOOGLE_TOKEN: ${{ secrets.GOOGLE_TOKEN }}
+      id: integrationuitest
+      run: |
+         source venv/bin/activate
+         cd moonshot-integration-testing-aisi/ui-integration-testing
+         npm ci
+         npx playwright install
+         npx playwright install-deps
+         npm install dotenv --save
+         echo "Running Benchmarking UI Test Cases 3"
+         URI="$URI" TOKEN="$TOKEN" URI2="$URI2" TOKEN2="$TOKEN2" ADDITIONAL_PARAMETERS="$ADDITIONAL_PARAMETERS" TOGETHER_TOKEN="$TOGETHER_TOKEN" OPENAI_TOKEN="$OPENAI_TOKEN" AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" GOOGLE_TOKEN="$GOOGLE_TOKEN" DEBUG=pw:api npx playwright test tests/benchmarking-3.spec.ts
+    
+    - name: Print Environment Variables
+      run: env
+      
+    # - name: Upload Playwright Traces
+    #   if: always()
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #       name: playwright-trace-integration-ui-test-benchmarking-3-${{ github.run_id }}
+    #       path: |
+    #         /home/runner/work/moonshotAISI/moonshotAISI/moonshot-integration-testing-aisi/ui-integration-testing/test-results
+
+##########################################################################################################################################################################
+  integration-ui-test-red-teaming:
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+
+    steps:
+
+    - name: Checkout Moonshot (Pull Request Review)
+      if: github.event_name == 'pull_request_review'
+      uses: actions/checkout@v4
+      with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+
+    - name: Checkout Moonshot (Workflow Dispatch)
+      if: github.event_name == 'workflow_dispatch'
+      uses: actions/checkout@v4
+      with:
+          repository: sgaisi/moonshotAISI
+          ref: ${{ inputs.moonshot_branch }}
+
+    - name: Clean workspace
+      run: |
+        df -h
+        sudo rm -rf /tmp/* /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+        sudo docker image prune -af || true
+        sudo docker system prune -af || true
+        sudo docker builder prune -a || true
+        sudo apt-get clean
+        sudo apt-get autoremove -y
+        df -h
+
+    - name: Setup Python 3.11
+      uses: actions/setup-python@v4
+      with:
+          python-version: "~=3.11.4"
+    
+    - name: Setup Moonshot
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install -r requirements.txt
+        touch .env
+        echo "${{ secrets.ENVIRONMENT_VARS }}" >> .env
+
+    - name: Checkout Moonshot Data (Pull Request Review)
+      if: github.event_name == 'pull_request_review'
+      uses: actions/checkout@v4
+      with: 
+         repository: sgaisi/moonshot-data-aisi
+         ref: ${{ vars.MOONSHOT_DATA_BRANCH }}
+         path: moonshot-data-aisi
+
+    - name: Checkout Moonshot Data (Workflow Dispatch)
+      if: github.event_name == 'workflow_dispatch'
+      uses: actions/checkout@v4
+      with: 
+         repository: sgaisi/moonshot-data-aisi
+         ref: ${{ inputs.moonshot_data_branch }}
+         path: moonshot-data-aisi
+
+    - name: Setup Moonshot Data
+      run: |
+        source venv/bin/activate
+        cd moonshot-data-aisi
+        pip install -r requirements.txt
+
+    - name: Checkout Moonshot UI (Pull Request Review)
+      if: github.event_name == 'pull_request_review'
+      uses: actions/checkout@v4
+      with:
+        repository: sgaisi/moonshot-ui-aisi
+        ref: ${{ vars.MOONSHOT_UI_BRANCH }}
+        path: moonshot-ui-aisi
+
+    - name: Checkout Moonshot UI (Workflow Dispatch)
+      if: github.event_name == 'workflow_dispatch'
+      uses: actions/checkout@v4
+      with:
+        repository: sgaisi/moonshot-ui-aisi
+        ref: ${{ inputs.moonshot_ui_branch }}
+        path: moonshot-ui-aisi
+
+     # Download NLTK stopwords
+    - name: Download NLTK stopwords
+      run: |
+        source venv/bin/activate
+        pip install nltk
+        python -c "import nltk; nltk.download('stopwords');nltk.download('punkt');nltk.download('punkt_tab');nltk.download('averaged_perceptron_tagger_eng');"
     
     - name: Setup Moonshot UI
       run: |
@@ -760,6 +934,147 @@ jobs:
     #         --milestone-id "5" \
     #         --run-description ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} \
     #         -f "./test-results/junit-report.xml" 
+  ##########################################################################################################################################################################
+  integration-ui-test-red-teaming-2:
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+
+    steps:
+
+    - name: Checkout Moonshot (Pull Request Review)
+      if: github.event_name == 'pull_request_review'
+      uses: actions/checkout@v4
+      with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+
+    - name: Checkout Moonshot (Workflow Dispatch)
+      if: github.event_name == 'workflow_dispatch'
+      uses: actions/checkout@v4
+      with:
+          repository: sgaisi/moonshotAISI
+          ref: ${{ inputs.moonshot_branch }}
+
+    - name: Clean workspace
+      run: |
+        df -h
+        sudo rm -rf /tmp/* /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+        sudo docker image prune -af || true
+        sudo docker system prune -af || true
+        sudo docker builder prune -a || true
+        sudo apt-get clean
+        sudo apt-get autoremove -y
+        df -h
+
+    - name: Setup Python 3.11
+      uses: actions/setup-python@v4
+      with:
+          python-version: "~=3.11.4"
+    
+    - name: Setup Moonshot
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install -r requirements.txt
+        touch .env
+        echo "${{ secrets.ENVIRONMENT_VARS }}" >> .env
+
+    - name: Checkout Moonshot Data (Pull Request Review)
+      if: github.event_name == 'pull_request_review'
+      uses: actions/checkout@v4
+      with: 
+         repository: sgaisi/moonshot-data-aisi
+         ref: ${{ vars.MOONSHOT_DATA_BRANCH }}
+         path: moonshot-data-aisi
+
+    - name: Checkout Moonshot Data (Workflow Dispatch)
+      if: github.event_name == 'workflow_dispatch'
+      uses: actions/checkout@v4
+      with: 
+         repository: sgaisi/moonshot-data-aisi
+         ref: ${{ inputs.moonshot_data_branch }}
+         path: moonshot-data-aisi
+
+    - name: Setup Moonshot Data
+      run: |
+        source venv/bin/activate
+        cd moonshot-data-aisi
+        pip install -r requirements.txt
+
+    - name: Checkout Moonshot UI (Pull Request Review)
+      if: github.event_name == 'pull_request_review'
+      uses: actions/checkout@v4
+      with:
+        repository: sgaisi/moonshot-ui-aisi
+        ref: ${{ vars.MOONSHOT_UI_BRANCH }}
+        path: moonshot-ui-aisi
+
+    - name: Checkout Moonshot UI (Workflow Dispatch)
+      if: github.event_name == 'workflow_dispatch'
+      uses: actions/checkout@v4
+      with:
+        repository: sgaisi/moonshot-ui-aisi
+        ref: ${{ inputs.moonshot_ui_branch }}
+        path: moonshot-ui-aisi
+
+     # Download NLTK stopwords
+    - name: Download NLTK stopwords
+      run: |
+        source venv/bin/activate
+        pip install nltk
+        python -c "import nltk; nltk.download('stopwords');nltk.download('punkt');nltk.download('punkt_tab');nltk.download('averaged_perceptron_tagger_eng');nltk.download('universal_tagset');"
+    
+    - name: Setup Moonshot UI
+      run: |
+        source venv/bin/activate
+        cd moonshot-ui-aisi
+        npm install
+        npm run build
+        cd ../
+        nohup python -m moonshot web &
+
+    - name: Checkout Integration Test 
+      uses: actions/checkout@v4
+      with:
+          repository: sgaisi/moonshot-integration-testing-aisi
+          ref: ${{ inputs.moonshot_integration_testing_branch }}
+          path: moonshot-integration-testing-aisi
+    
+    - name: Run Integration UI Test
+      env: 
+        URI: ${{ secrets.URI }}
+        TOKEN: ${{ secrets.TOKEN }}
+        URI2: ${{ secrets.URI2 }}
+        TOKEN2: ${{ secrets.TOKEN2 }}
+        ADDITIONAL_PARAMETERS: ${{ secrets.ADDITIONAL_PARAMETERS }}
+        TOGETHER_TOKEN: ${{ secrets.TOGETHER_TOKEN }}
+        OPENAI_TOKEN: ${{ secrets.OPENAI_TOKEN }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        GOOGLE_TOKEN: ${{ secrets.GOOGLE_TOKEN }}
+      id: integrationuitest
+      run: |
+         source venv/bin/activate
+         cd moonshot-integration-testing-aisi/ui-integration-testing
+         npm ci
+         npx playwright install
+         npx playwright install-deps
+         npm install dotenv --save
+         # echo "Running Red Teaming UI Test Cases"
+         URI="$URI" TOKEN="$TOKEN" URI2="$URI2" TOKEN2="$TOKEN2" ADDITIONAL_PARAMETERS="$ADDITIONAL_PARAMETERS" TOGETHER_TOKEN="$TOGETHER_TOKEN" OPENAI_TOKEN="$OPENAI_TOKEN" AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" GOOGLE_TOKEN="$GOOGLE_TOKEN" DEBUG=pw:api npx playwright test tests/red_teaming_2.spec.ts
+    
+    - name: Print Environment Variables
+      run: env
+      
+    # - name: Upload Playwright Traces
+    #   if: always()
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #       name: playwright-trace-integration-ui-test-redteaming-2-${{ github.run_id }}
+    #       path: |
+    #         /home/runner/work/moonshotAISI/moonshotAISI/moonshot-integration-testing-aisi/ui-integration-testing/test-results
+  
   ##########################################################################################################################################################################
   integration-cli-test:
 
